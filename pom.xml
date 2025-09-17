@@ -9,18 +9,18 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.zfh</groupId>
-    <artifactId>taste-notes</artifactId>
+    <artifactId>star-life</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>taste-notes</name>
-    <description>taste-notes</description>
+    <name>star-life</name>
+    <description>star-life</description>
     <packaging>pom</packaging>
 
     <!-- 子模块 -->
     <modules>
-        <module>taste-notes-app</module>
-        <module>taste-notes-core</module>
-        <module>taste-notes-pojo</module>
-        <module>taste-notes-common</module>
+        <module>star-life-app</module>
+        <module>star-life-core</module>
+        <module>star-life-pojo</module>
+        <module>star-life-common</module>
     </modules>
 
 

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.zfh</groupId>
-        <artifactId>taste-notes</artifactId>
+        <artifactId>star-life</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>taste-notes-common</artifactId>
+    <artifactId>star-life-pojo</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -18,27 +18,14 @@
     </properties>
 
     <dependencies>
-<!--spring web-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zfh</groupId>
-            <artifactId>taste-notes-pojo</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-<!--        lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
 
-        <!--            jjwt-->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
 
