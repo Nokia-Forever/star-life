@@ -7,4 +7,3 @@
 springboot,mysql,redis,springSecurity,mybatis-plus........
 
 模块区分:\
-1.taste-notes-app
