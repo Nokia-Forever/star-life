@@ -16,4 +16,13 @@ public class ExceptionConstant {
     public static final String USERNAME_EMPTY = "用户名为空";
     //用户未登录
     public static final String USER_NOT_LOGIN = "用户未登录";
+    //"用户被锁"
+    public static final String USER_LOCK = "用户被锁,稍后再试";
+    //用户不存在
+    public static final String USER_NOT_EXIST = "用户不存在";
+
+
+
+    //用户名存在
+    public static final String USERNAME_EXIST = "用户名已存在";
 }

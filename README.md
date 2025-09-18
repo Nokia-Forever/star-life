@@ -7,3 +7,8 @@
 springboot,mysql,redis,springSecurity,mybatis-plus........
 
 模块区分:\
+1.star-life-app 启动模块\
+2.star-life-common 通用模块\
+3.star-life-core 客户端核心模块\
+4.star-life-admin 管理模块\
+5.star-life-pojo 数据模块\ 

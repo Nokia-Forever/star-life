@@ -92,6 +92,7 @@ public class UsernamePasswordJsonFilter extends UsernamePasswordAuthenticationFi
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
+    // 验证验证码
     private void verifyCaptcha(HttpServletRequest request, String captcha) {
         if(!captchaProperties.isUserEnable()){
             return;

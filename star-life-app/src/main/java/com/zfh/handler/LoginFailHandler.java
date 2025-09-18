@@ -21,6 +21,7 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     private ObjectMapper objectMapper;
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
         //写出异常,设置请求头为application/json,响应状态码为400,响应内容是异常信息
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

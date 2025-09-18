@@ -102,7 +102,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     // 定义不需要身份验证即可访问的路径
                     authorizeRequests
-                            .requestMatchers(URLConstant.USER_LOGIN_URL, URLConstant.CAPTCHA_URL).permitAll()
+                            .requestMatchers(URLConstant.USER_LOGIN_URL, URLConstant.CAPTCHA_URL, URLConstant.USER_REGISTER_URL).permitAll()
                             .anyRequest().authenticated();
                 })
                 //配置登出处理

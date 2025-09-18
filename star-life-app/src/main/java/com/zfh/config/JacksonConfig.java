@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.TimeZone;
 
+/**
+ * Jackson 配置
+ */
 @Configuration
 public class JacksonConfig {
     @Bean

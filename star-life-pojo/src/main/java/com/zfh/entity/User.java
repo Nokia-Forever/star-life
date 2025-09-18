@@ -1,5 +1,7 @@
 package com.zfh.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,7 @@ public class User implements Serializable, UserDetails {
     /**
      * 用户ID
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -43,27 +46,27 @@ public class User implements Serializable, UserDetails {
     /**
      * 用户类型：0-普通用户，1-商家
      */
-    private Byte userType;
+    private Integer userType;
 
     /**
      * 账户是否没有过期，0已过期 1正常
      */
-    private Byte accountNoExpired;
+    private Integer accountNoExpired;
 
     /**
      * 密码是否没有过期，0已过期 1正常
      */
-    private Byte credentialsNoExpired;
+    private Integer credentialsNoExpired;
 
     /**
      * 账号是否没有锁定，0已锁定 1正常
      */
-    private Byte accountNoLocked;
+    private Integer accountNoLocked;
 
     /**
      * 账号是否启用，0禁用 1启用
      */
-    private Byte accountEnabled;
+    private Integer accountEnabled;
 
     /**
      * 最后登录时间
