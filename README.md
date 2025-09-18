@@ -12,3 +12,6 @@ springboot,mysql,redis,springSecurity,mybatis-plus........
 3.star-life-core 客户端核心模块\
 4.star-life-admin 管理模块\
 5.star-life-pojo 数据模块\ 
+
+功能实现:\
+1.用户:登录,注册\
