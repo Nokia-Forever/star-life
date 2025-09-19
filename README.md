@@ -14,4 +14,4 @@ springboot,mysql,redis,springSecurity,mybatis-plus........
 5.star-life-pojo 数据模块\ 
 
 功能实现:\
-1.用户:登录,注册\
+1.用户:登录,注册,查询当前用户,更新当前用户,修改密码\
