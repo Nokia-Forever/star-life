@@ -15,3 +15,4 @@ springboot,mysql,redis,springSecurity,mybatis-plus........
 
 功能实现:\
 1.用户:登录,注册,查询当前用户,更新当前用户,修改密码\
+2.关注:关注和取关,判断是否关注,获取粉丝列表\

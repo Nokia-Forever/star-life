@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zfh.mapper.UserMapper">
 
-   <resultMap id="UserVorResultMap" type="com.zfh.vo.UserVo">
+   <resultMap id="UserSelfVorResultMap" type="com.zfh.vo.UserSelfVo">
        <id property="id" column="id" />
         <result property="username" column="username" />
         <result property="nickName" column="nick_name" />
@@ -11,11 +11,31 @@
        <result property="lastLoginTime" column="last_login_time" />
         <association property="userInfo" column="id" select="com.zfh.mapper.UserInfoMapper.selectById"/>
    </resultMap>
-    <select id="selectUserInfoById" resultMap="UserVorResultMap">
+
+    <resultMap id="UserVorResultMap" type="com.zfh.vo.UserVo">
+        <id property="id" column="id" />
+        <result property="nickName" column="nick_name" />
+        <result property="icon" column="icon" />
+        <result property="userType" column="user_type" />
+        <result property="lastLoginTime" column="last_login_time" />
+        <association property="userInfoVo" column="id"  select="com.zfh.mapper.UserInfoMapper.selectUserInfoById" />
+    </resultMap>
+
+    <select id="selectUserSelfInfoById" resultMap="UserSelfVorResultMap">
         select * from user where id = #{id}
     </select>
 
     <select id="getPasswordById" resultType="java.lang.String">
         select password from user where id = #{id}
+    </select>
+    <select id="selectUserInfoById" resultMap="UserVorResultMap">
+        select id,nick_name,icon,user_type,last_login_time from user where id = #{id}
+    </select>
+
+    <select id="selectUserVoListByIds" resultType="com.zfh.vo.UserVo">
+        select id,nick_name,icon,user_type,last_login_time from user where id in
+        <foreach item="id" collection="list" separator="," open="(" close=")" index="">
+            #{id}
+        </foreach>
     </select>
 </mapper>

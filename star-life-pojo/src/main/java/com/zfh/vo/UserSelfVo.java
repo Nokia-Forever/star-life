@@ -1,19 +1,24 @@
 package com.zfh.vo;
 
+import com.zfh.entity.UserInfo;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户详细信息对象(别人)
+ * 用户信息 (自己)
  */
 @Data
-public class UserVo implements Serializable {
+public class UserSelfVo implements Serializable {
     /**
      * 用户ID
      */
     private Long id;
+    /**
+     * 用户名（用于登录）
+     */
+    private String username;
     /**
      * 昵称
      */
@@ -33,7 +38,7 @@ public class UserVo implements Serializable {
     /**
      * 用户详细信息
      */
-    private UserInfoVo userInfoVo;
+    private UserInfo userInfo;
 
     private static final long serialVersionUID = 1L;
 }

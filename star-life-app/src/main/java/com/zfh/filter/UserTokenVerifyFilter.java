@@ -43,7 +43,7 @@ public class UserTokenVerifyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //只校验用户请求,放行登录,注册
         String requestURI =request.getRequestURI();
-        if (!requestURI.startsWith("/user")
+        if (!requestURI.startsWith("/client")
                 ||requestURI.equals(URLConstant.USER_LOGIN_URL)
                 ||requestURI.equals(URLConstant.USER_REGISTER_URL)
         ) {

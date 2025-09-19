@@ -28,4 +28,10 @@ public class ExceptionConstant {
     //用户在别处登录,请重新登录
     public static final String USER_LOGIN_ELSEWHERE = "用户在别处登录,请重新登录";
     public static final String USER_PASSWORD_ERROR = "密码错误";
+
+
+    //操作失败,请稍后再试
+    public static final String OPERATION_FAILED = "操作失败,请稍后再试";
+    //不能关注自己
+    public static final String CANNOT_FOLLOW_YOURSELF = "不能关注自己";
 }

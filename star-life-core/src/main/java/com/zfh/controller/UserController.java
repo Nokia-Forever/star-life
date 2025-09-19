@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @description 用户控制层
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/client/user")
 @Slf4j
 public class UserController {
     @Autowired
@@ -66,5 +66,15 @@ public class UserController {
     }
 
 
+    /**
+     * 查询用户信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/info/{id}")
+    public R getUserInfo(@PathVariable Long id) {
+        log.info("查询用户信息：{}", id);
+        return R.OK(userService.getInfoById(id));
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.zfh.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zfh.constant.UserConstant;
 import com.zfh.entity.User;
@@ -42,5 +43,36 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setSignature("");
         userInfo.setCity("");
         return this.save(userInfo) ? 1 : 0;
+    }
+
+    /**
+     * 修改粉丝数
+     * @param id
+     * @param count
+     * @return
+     */
+    @Override
+    public int changeFansCount(Long id, Integer count) {
+        LambdaUpdateWrapper< UserInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper
+                .setSql("fans = fans "+ (count>=0?"+ ":"- ") +count) // 直接写SQL片段：
+                .eq(UserInfo::getUserId, id);            // 条件：
+
+        return update(null, updateWrapper) ?1:0;
+    }
+
+    /**
+     * 修改关注数
+     * @param id
+     * @param count
+     * @return
+     */
+    @Override
+    public int changeFollowingCount(Long id, Integer count) {
+        LambdaUpdateWrapper< UserInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper
+                .setSql("followee = followee "+ (count>=0?"+ ":"- ") +count) // 直接写SQL片段：
+                .eq(UserInfo::getUserId, id);            // 条件：
+        return update(null, updateWrapper) ?1:0;
     }
 }

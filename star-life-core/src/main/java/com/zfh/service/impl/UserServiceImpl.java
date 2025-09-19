@@ -16,6 +16,7 @@ import com.zfh.mapper.UserMapper;
 import com.zfh.service.IUserInfoService;
 import com.zfh.service.IUserService;
 import com.zfh.utils.CurrentHolder;
+import com.zfh.vo.UserSelfVo;
 import com.zfh.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zfh.constant.UserConstant.USER_STATUS_ENABLE;
@@ -114,13 +116,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * @return
      */
     @Override
-    public UserVo getCurrentUserInfo() {
+    public UserSelfVo getCurrentUserInfo() {
         //获取当前用户id
         Long id = CurrentHolder.getCurrentUser().getId();
         if(id == null){
             throw new UserLoginException(ExceptionConstant.USER_NOT_LOGIN);
         }
-        return userMapper.selectUserInfoById(id);
+        return userMapper.selectUserSelfInfoById(id);
     }
 
     /**
@@ -172,4 +174,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .eq(User::getId, user.getId());
         return userMapper.update(null, lambdaWrapper);
     }
+
+    /**
+     * 获取用户信息
+     * @param id
+     * @return
+     */
+    @Override
+    public UserVo getInfoById(Long id) {
+
+        UserVo userVo = userMapper.selectUserInfoById(id);
+        return userVo;
+    }
+
+    /**
+     * 批量获取用户信息
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<UserVo> selectUserVoListByIds(List<Long> ids) {
+        return userMapper.selectUserVoListByIds(ids);
+    }
+
+
 }

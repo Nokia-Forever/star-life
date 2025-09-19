@@ -5,8 +5,11 @@ import com.zfh.dto.UserInfoDto;
 import com.zfh.dto.UserPasswordDto;
 import com.zfh.dto.UserRegisterDto;
 import com.zfh.entity.User;
+import com.zfh.vo.UserSelfVo;
 import com.zfh.vo.UserVo;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.List;
 
 /**
  * 用户服务接口
@@ -24,7 +27,7 @@ public interface IUserService extends UserDetailsService, IService<User> {
      * 获取当前用户信息
      * @return
      */
-    UserVo getCurrentUserInfo();
+    UserSelfVo getCurrentUserInfo();
 
     /**
      * 修改当前用户信息
@@ -40,4 +43,18 @@ public interface IUserService extends UserDetailsService, IService<User> {
      * @return
      */
     int updateCurrentPassword(UserPasswordDto userPasswordDto);
+
+    /**
+     * 获取用户信息
+     * @param id
+     * @return
+     */
+    UserVo getInfoById(Long id);
+
+    /**
+     * 批量获取用户信息
+     * @param ids
+     * @return
+     */
+    List<UserVo> selectUserVoListByIds(List<Long> ids);
 }

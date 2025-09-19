@@ -1,7 +1,8 @@
 package com.zfh.mapper;
 
-import com.zfh.entity.UserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zfh.entity.UserInfo;
+import com.zfh.vo.UserInfoVo;
 
 /**
  * <p>
@@ -12,5 +13,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2025-09-18
  */
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
+
+    /**
+     * 根据id查询用户信息
+     * @param id
+     * @return
+     */
+    UserInfoVo selectUserInfoById(Long id);
 
 }
