@@ -1,6 +1,7 @@
 package com.zfh.handler;
 
 import com.zfh.exception.BaseException;
+import com.zfh.exception.UserException;
 import com.zfh.result.R;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return R.FAIL(e.getBindingResult().getFieldError().getDefaultMessage());
+    }
+
+    /**
+     * 用户异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(UserException.class)
+    public R handleUserException(UserException e) {
+        return R.FAIL(e.getMessage());
     }
 
     // 处理其他异常

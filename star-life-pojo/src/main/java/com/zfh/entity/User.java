@@ -2,7 +2,11 @@ package com.zfh.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +20,10 @@ import java.util.List;
  * user
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("user")
+@NoArgsConstructor
 public class User implements Serializable, UserDetails {
     /**
      * 用户ID

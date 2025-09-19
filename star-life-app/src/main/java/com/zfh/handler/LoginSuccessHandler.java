@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.entity.User;
 import com.zfh.property.JwtProperties;
-import com.zfh.result.R;
+import com.zfh.utils.HttpUtils;
 import com.zfh.utils.JwtUtils;
-import com.zfh.vo.UserVo;
+import com.zfh.vo.UserLoginVo;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,14 +40,19 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         User user = ((User)authentication.getPrincipal());
         Map<String, Object> claims = Map.of("id", user.getId());
 
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user, userVo);
+        UserLoginVo userLoginVo = new UserLoginVo();
+        BeanUtils.copyProperties(user, userLoginVo);
+
+        //登录成功生成 token
+        String token = JwtUtils.generateToken(jwtProperties.getUserSecret(),  claims );
+        response.setHeader(jwtProperties.getUserTokenName(), token);
+        userLoginVo.setToken(token);
 
         Map<String,String> map= new HashMap<>();
-        objectMapper.convertValue(userVo, Map.class).forEach((k, v)->{
-            //不保存token
+        objectMapper.convertValue(userLoginVo, Map.class).forEach((k, v)->{
+            //生成hash函数
             if("token".equals(k)){
-                return;
+                v =DigestUtils.sha256Hex(v.toString());
             }
             map.put(k.toString(), v==null?null:v.toString());
         });
@@ -55,14 +61,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         stringRedisTemplate.opsForHash().putAll(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), map);
         stringRedisTemplate.expire(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), RedisKeyConstant.USER_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
 
-        //登录成功生成 token
-        String token = JwtUtils.generateToken(jwtProperties.getUserSecret(),  claims );
-        response.setHeader(jwtProperties.getUserTokenName(), token);
-        userVo.setToken(token);
-
-        //设置响应格式
-        response.setContentType("application/json;charset=UTF-8");
-        //返回登录成功信息
-        response.getWriter().write(objectMapper.writeValueAsString(R.OK(userVo)));
+        //响应数据
+        HttpUtils.writeSuccessJson(response, userLoginVo, objectMapper);
     }
 }

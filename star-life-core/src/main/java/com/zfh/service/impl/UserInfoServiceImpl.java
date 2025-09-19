@@ -1,11 +1,11 @@
 package com.zfh.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zfh.constant.UserConstant;
 import com.zfh.entity.User;
 import com.zfh.entity.UserInfo;
 import com.zfh.mapper.UserInfoMapper;
 import com.zfh.service.IUserInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,18 +29,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public int registerInfo(User user) {
         Date now = new Date();
-        UserInfo userInfo = UserInfo.builder().userId(user.getId())
-                .gender(UserConstant.GENDER_UNKNOWN)
-                .city("")
-                .introduce("")
-                .signature("")
-                .fans(0L)
-                .followee(0L)
-                .credits(0L)
-                .level(UserConstant.MEMBER_LEVEL_0)
-                .createTime(now)
-                .updateTime(now)
-                .build();
+        UserInfo userInfo=new UserInfo();
+        userInfo.setUserId(user.getId());
+        userInfo.setCreateTime(now);
+        userInfo.setUpdateTime(now);
+        userInfo.setGender(UserConstant.GENDER_UNKNOWN);
+        userInfo.setLevel(UserConstant.MEMBER_LEVEL_0);
+        userInfo.setCredits(0L);
+        userInfo.setFans(0L);
+        userInfo.setFollowee(0L);
+        userInfo.setIntroduce("");
+        userInfo.setSignature("");
+        userInfo.setCity("");
         return this.save(userInfo) ? 1 : 0;
     }
 }

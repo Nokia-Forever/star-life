@@ -1,6 +1,7 @@
 package com.zfh.config;
 
 import com.zfh.constant.URLConstant;
+import com.zfh.filter.UserTokenVerifyFilter;
 import com.zfh.filter.UsernamePasswordJsonFilter;
 import com.zfh.handler.LoginFailHandler;
 import com.zfh.handler.LoginSuccessHandler;
@@ -40,6 +41,8 @@ public class SecurityConfig {
     private CaptchaProperties captchaProperties;
     @Autowired
     private LogoutHandlerImpl logoutHandler;
+    @Autowired
+    private UserTokenVerifyFilter userTokenVerifyFilter;
 
     //配置密码编码器
     @Bean
@@ -96,6 +99,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 // 禁用HTTP Basic认证
                 .httpBasic(AbstractHttpConfigurer::disable)
+                //添加用户token校验过滤器
+                .addFilterBefore(userTokenVerifyFilter, UsernamePasswordJsonFilter.class)
                 // 添加自定义的JSON登录过滤器
                 .addFilterAt(usernamePasswordJsonFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 // 配置HTTP请求的授权规则

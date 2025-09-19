@@ -1,8 +1,11 @@
 package com.zfh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zfh.dto.UserInfoDto;
+import com.zfh.dto.UserPasswordDto;
 import com.zfh.dto.UserRegisterDto;
 import com.zfh.entity.User;
+import com.zfh.vo.UserVo;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -16,4 +19,25 @@ public interface IUserService extends UserDetailsService, IService<User> {
      * @return 注册结果
      */
     int register(UserRegisterDto userRegisterDto);
+
+    /**
+     * 获取当前用户信息
+     * @return
+     */
+    UserVo getCurrentUserInfo();
+
+    /**
+     * 修改当前用户信息
+     * @param userInfoDto
+     * @return
+     */
+    int updateCurrent(UserInfoDto userInfoDto);
+
+
+    /**
+     * 修改当前用户密码
+     * @param userPasswordDto
+     * @return
+     */
+    int updateCurrentPassword(UserPasswordDto userPasswordDto);
 }

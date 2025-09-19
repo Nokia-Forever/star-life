@@ -1,16 +1,22 @@
 package com.zfh.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zfh.constant.ExceptionConstant;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.constant.UserConstant;
+import com.zfh.dto.UserInfoDto;
+import com.zfh.dto.UserPasswordDto;
 import com.zfh.dto.UserRegisterDto;
 import com.zfh.entity.User;
+import com.zfh.entity.UserInfo;
 import com.zfh.exception.UserLoginException;
 import com.zfh.mapper.UserMapper;
 import com.zfh.service.IUserInfoService;
 import com.zfh.service.IUserService;
+import com.zfh.utils.CurrentHolder;
+import com.zfh.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -37,6 +43,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private PasswordEncoder passwordEncoder;
     @Autowired
     private IUserInfoService userInfoService;
+    @Autowired
+    private UserMapper userMapper;
+
     /**
      * 根据用户名查询用户(spring-security)
      * @param username
@@ -81,7 +90,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         //把密码加密
         String encode = passwordEncoder.encode(userRegisterDto.getPassword());
-        user = new User();
         BeanUtils.copyProperties(userRegisterDto, user);
         user.setPassword(encode);
 
@@ -99,5 +107,69 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         //创建详细信息
         return userInfoService.registerInfo(user);
+    }
+
+    /**
+     * 获取当前用户信息
+     * @return
+     */
+    @Override
+    public UserVo getCurrentUserInfo() {
+        //获取当前用户id
+        Long id = CurrentHolder.getCurrentUser().getId();
+        if(id == null){
+            throw new UserLoginException(ExceptionConstant.USER_NOT_LOGIN);
+        }
+        return userMapper.selectUserInfoById(id);
+    }
+
+    /**
+     * 修改当前用户信息
+     * @param userInfoDto
+     * @return
+     */
+    @Transactional
+    @Override
+    public int updateCurrent(UserInfoDto userInfoDto) {
+        //封装user和userInfo
+        User user = new User();
+        BeanUtils.copyProperties(userInfoDto, user);
+        user.setUpdateTime(new Date());
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(userInfoDto, userInfo);
+        userInfo.setUpdateTime(new Date());
+        userInfo.setUserId(user.getId());
+
+        //更新redis用户信息
+        stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), "username", user.getUsername());
+        stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), "nickName", user.getNickName());
+        stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), "icon", user.getIcon());
+
+        //更新user和userInfo
+        updateById( user);
+        return userInfoService.updateById(userInfo) ? 1 : 0;
+    }
+
+    /**
+     * 修改当前用户密码
+     * @param userPasswordDto
+     * @return
+     */
+    @Override
+    public int updateCurrentPassword(UserPasswordDto userPasswordDto) {
+        //获取当前线程用户
+        User user = CurrentHolder.getCurrentUser();
+        String password = userMapper.getPasswordById(user.getId());
+
+        //比对旧密码
+        if(!passwordEncoder.matches(userPasswordDto.getPassword(), password)){
+            throw new UserLoginException(ExceptionConstant.USER_PASSWORD_ERROR);
+        }
+
+        // Lambda方式（类型安全，推荐）
+        LambdaUpdateWrapper<User> lambdaWrapper = new LambdaUpdateWrapper<>();
+        lambdaWrapper.set(User::getPassword, passwordEncoder.encode(userPasswordDto.getNewPassword()))
+                .eq(User::getId, user.getId());
+        return userMapper.update(null, lambdaWrapper);
     }
 }

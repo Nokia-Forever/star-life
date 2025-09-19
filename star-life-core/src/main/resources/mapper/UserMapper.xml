@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zfh.mapper.UserMapper">
+
+   <resultMap id="UserVorResultMap" type="com.zfh.vo.UserVo">
+       <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="nickName" column="nick_name" />
+        <result property="icon" column="icon" />
+       <result property="userType" column="user_type" />
+       <result property="lastLoginTime" column="last_login_time" />
+        <association property="userInfo" column="id" select="com.zfh.mapper.UserInfoMapper.selectById"/>
+   </resultMap>
+    <select id="selectUserInfoById" resultMap="UserVorResultMap">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="getPasswordById" resultType="java.lang.String">
+        select password from user where id = #{id}
+    </select>
+</mapper>

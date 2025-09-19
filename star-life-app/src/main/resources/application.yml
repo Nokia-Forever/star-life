@@ -1,5 +1,7 @@
 server:
   port: 8080
+
+
 spring:
   datasource:
     username: root
@@ -38,4 +40,7 @@ com:
 logging:
   level:
     com.zfh.filter.UsernamePasswordJsonFilter: off
+    com.zfh.mapper: debug
+#把mybatis-plus的日志打印到控制台
+
 

@@ -25,4 +25,7 @@ public class ExceptionConstant {
 
     //用户名存在
     public static final String USERNAME_EXIST = "用户名已存在";
+    //用户在别处登录,请重新登录
+    public static final String USER_LOGIN_ELSEWHERE = "用户在别处登录,请重新登录";
+    public static final String USER_PASSWORD_ERROR = "密码错误";
 }

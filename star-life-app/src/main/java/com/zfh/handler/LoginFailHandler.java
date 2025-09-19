@@ -1,7 +1,7 @@
 package com.zfh.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zfh.result.R;
+import com.zfh.utils.HttpUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,11 +21,7 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     private ObjectMapper objectMapper;
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-
         //写出异常,设置请求头为application/json,响应状态码为400,响应内容是异常信息
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        //转为 json
-        response.getWriter().write(objectMapper.writeValueAsString(R.FAIL(exception.getMessage())));
+        HttpUtils.writeFailJson(response,  exception.getMessage(), objectMapper);
     }
 }

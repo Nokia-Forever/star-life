@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.ExceptionConstant;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.entity.User;
-import com.zfh.result.R;
+import com.zfh.utils.HttpUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,19 +28,14 @@ public class LogoutHandlerImpl implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        //写回信息
-        response.setContentType("application/json;charset=UTF-8");
-
         if (authentication == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(objectMapper.writeValueAsString(R.FAIL(ExceptionConstant.USER_NOT_LOGIN)));
+            HttpUtils.writeFailJson(response, ExceptionConstant.USER_NOT_LOGIN, objectMapper);
             return;
         }
         //在redis移除当前用户的信息
         User user = (User) authentication.getPrincipal();
         stringRedisTemplate.delete(RedisKeyConstant.USER_TOKEN_KEY + user.getId());
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().write(objectMapper.writeValueAsString(R.OK()));
+        HttpUtils.writeSuccessJson(response, "退出成功" , objectMapper);
     }
 }

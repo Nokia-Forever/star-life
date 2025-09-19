@@ -1,13 +1,16 @@
 package com.zfh.vo;
 
-import com.zfh.entity.UserInfo;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 用户vo返回对象
+ * user
+ */
 @Data
-public class UserVo implements Serializable {
+public class UserLoginVo implements Serializable {
     /**
      * 用户ID
      */
@@ -32,10 +35,31 @@ public class UserVo implements Serializable {
      * 最后登录时间
      */
     private Date lastLoginTime;
+
     /**
-     * 用户详细信息
+     * 账户是否没有过期，0已过期 1正常
      */
-    private UserInfo userInfo;
+    private Integer accountNoExpired;
+
+    /**
+     * 密码是否没有过期，0已过期 1正常
+     */
+    private Integer credentialsNoExpired;
+
+    /**
+     * 账号是否没有锁定，0已锁定 1正常
+     */
+    private Integer accountNoLocked;
+
+    /**
+     * 账号是否启用，0禁用 1启用
+     */
+    private Integer accountEnabled;
 
     private static final long serialVersionUID = 1L;
+
+    /**
+    * token
+     */
+    private String token;
 }
