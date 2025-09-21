@@ -37,12 +37,12 @@ public class UsernamePasswordJsonFilter extends UsernamePasswordAuthenticationFi
         if (!request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException(ExceptionConstant.REQUEST_ERROR);
         }
-// TODO 为了方便测试,先不进行判定格式
-//        // 检查Content-Type是否为JSON
-//        String contentType = request.getContentType();
-//        if (contentType == null || !contentType.contains("application/json")) {
-//            throw new AuthenticationServiceException(ExceptionConstant.REQUEST_ERROR);
-//        }
+
+        // 检查Content-Type是否为JSON
+        String contentType = request.getContentType();
+        if (contentType == null || !contentType.contains("application/json")) {
+            throw new AuthenticationServiceException(ExceptionConstant.REQUEST_ERROR);
+        }
 
         String username = "";
         String password = "";

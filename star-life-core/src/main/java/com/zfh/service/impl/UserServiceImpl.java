@@ -89,6 +89,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (user != null) {
             throw new UserLoginException(ExceptionConstant.USERNAME_EXIST);
         }
+        user=new User();
 
         //把密码加密
         String encode = passwordEncoder.encode(userRegisterDto.getPassword());

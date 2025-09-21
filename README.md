@@ -2,10 +2,11 @@
 这是基于springboot实现的点评项目,实现用户端+管理端的相结合\
 初步实现:\
 1.用户端的SpringSecurity框架的集成\
+2.数据库存储采用Mysql,缓冲采用redis\
 
 所用技术:
-springboot,mysql,redis,springSecurity,mybatis-plus........
-
+mysql,redis,lombok,mybatis-plus,jjwt,hutool-captcha,jackson........
+spring:springboot,springSecurity,spring-cache,spring-validator,web
 模块区分:\
 1.star-life-app 启动模块\
 2.star-life-common 通用模块\
@@ -14,5 +15,7 @@ springboot,mysql,redis,springSecurity,mybatis-plus........
 5.star-life-pojo 数据模块\ 
 
 功能实现:\
+客户端:\
 1.用户:登录,注册,查询当前用户,更新当前用户,修改密码\
-2.关注:关注和取关,判断是否关注,获取粉丝列表\
+2.关注:关注和取关,判断是否关注,获取粉丝列表,获取关注列表,共同关注\
+3.商铺类型:查询商铺类型\

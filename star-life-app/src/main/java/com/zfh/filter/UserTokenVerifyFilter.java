@@ -1,9 +1,9 @@
 package com.zfh.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zfh.config.URLConfig;
 import com.zfh.constant.ExceptionConstant;
 import com.zfh.constant.RedisKeyConstant;
-import com.zfh.constant.URLConstant;
 import com.zfh.entity.User;
 import com.zfh.exception.UserLoginException;
 import com.zfh.property.JwtProperties;
@@ -39,13 +39,15 @@ public class UserTokenVerifyFilter extends OncePerRequestFilter {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private URLConfig urlConfig;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //只校验用户请求,放行登录,注册
         String requestURI =request.getRequestURI();
+        //不是客户端请求或在客户端请求白名单中则放行
         if (!requestURI.startsWith("/client")
-                ||requestURI.equals(URLConstant.USER_LOGIN_URL)
-                ||requestURI.equals(URLConstant.USER_REGISTER_URL)
+                || urlConfig.CLIENT_WHITE_URL_LIST.contains(requestURI)
         ) {
             filterChain.doFilter(request, response);
             return;

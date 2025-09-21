@@ -25,6 +25,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 登录认证配置
@@ -43,6 +45,8 @@ public class SecurityConfig {
     private LogoutHandlerImpl logoutHandler;
     @Autowired
     private UserTokenVerifyFilter userTokenVerifyFilter;
+    @Autowired
+    private URLConfig urlConfig;
 
     //配置密码编码器
     @Bean
@@ -94,6 +98,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource, AuthenticationManager authenticationManager) throws Exception {
 
+        //合并不需身份验证的路径
+        String[] array = Stream.of(urlConfig.CLIENT_WHITE_URL_LIST, urlConfig.ADMIN_WHITE_URL_LIST, urlConfig.COMMON_WHITE_URL_LIST)
+                .flatMap(List::stream)
+                .toArray(String[]::new);
         return http
                 // 禁用默认的表单登录
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -107,12 +115,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     // 定义不需要身份验证即可访问的路径
                     authorizeRequests
-                            .requestMatchers(URLConstant.USER_LOGIN_URL, URLConstant.CAPTCHA_URL, URLConstant.USER_REGISTER_URL).permitAll()
+                            .requestMatchers(array).permitAll()
                             .anyRequest().authenticated();
                 })
                 //配置登出处理
                 .logout(logout -> {
-                    logout.logoutUrl(URLConstant.LOGOUT_URL)
+                    logout.logoutUrl(URLConstant.USER_LOGOUT_URL)
                             .logoutSuccessHandler(logoutHandler)
                             .clearAuthentication( true);
                 })

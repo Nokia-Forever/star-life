@@ -20,6 +20,9 @@ spring:
     embedded:
       validation:
         enabled: true
+  cache:
+    redis:
+      key-prefix: starLife
 
 
 mybatis-plus:
@@ -36,6 +39,7 @@ com:
     captcha:
       user-enable: false
       user-length: 5
+
 
 logging:
   level:

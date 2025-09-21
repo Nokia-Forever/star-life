@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -112,8 +114,31 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
     @Override
     public Boolean isFollow(Long id) {
         Long currentUserId = CurrentHolder.getCurrentUser().getId();
-        //直接在redis判断
-        return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.USER_FOLLOW_KEY +currentUserId.toString(), id.toString());
+        List<Long> ids = getFollowList(currentUserId);
+        return ids.contains(id);
+    }
+
+    //获取关注列表(Redis)
+    private List<Long> getFollowList(Long id) {
+        //判断有没有这个key
+        if(Boolean.TRUE.equals(stringRedisTemplate.hasKey(RedisKeyConstant.USER_FOLLOW_KEY + id))){
+            Set<String> members = stringRedisTemplate.opsForSet().members(RedisKeyConstant.USER_FOLLOW_KEY + id);
+            stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id, RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            return members.stream().filter(pid-> !pid.equals("-1")).map(Long::valueOf).toList();
+        }
+        //查询数据库,并缓存到redis
+        List<Long> ids = followMapper.selectAllFollowIdById(id);
+        List<String> stringIds = ids.stream().map(String::valueOf).toList();
+        //如果没有关注
+        if(ids.isEmpty()){
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.USER_FOLLOW_KEY + id, "-1");
+            stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id, RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            return List.of();
+        }
+        //一次性添加到redis
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.USER_FOLLOW_KEY + id,stringIds.toArray(new String[0]));
+        stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id, RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+        return ids;
     }
 
     /**
@@ -124,7 +149,56 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
     @Override
     public RPage<UserVo> listFans(IdPageDto idPageDto) {
         IPage<Long> ids = followMapper.selectFanIdsByUserId(new Page<>(idPageDto.getCurrentPage(), idPageDto.getPageSize()), idPageDto.getId());
+        if (ids.getRecords().isEmpty()){
+            return new RPage<>(0L, null);
+        }
         List<UserVo> userVoList = userService.selectUserVoListByIds(ids.getRecords());
         return new RPage<>(ids.getTotal(), userVoList);
     }
+
+
+    /**ids
+     * 获取关注列表
+     * @param idPageDto
+     * @return
+     */
+    @Override
+    public RPage<UserVo> listFollow(IdPageDto idPageDto) {
+        List<Long> followList = getFollowList(idPageDto.getId());
+        if( followList.isEmpty()){
+            return new RPage<>(0L, null);
+        }
+        //截取
+        List<Long> ids = followList.subList(idPageDto.getCurrentPage()*idPageDto.getPageSize() , Math.min(followList.size(), idPageDto.getPageSize()));
+        List<UserVo> userVoList = userService.selectUserVoListByIds(ids);
+        return new RPage<>((long) ids.size(), userVoList);
+    }
+
+    /**
+     * 获取共同关注列表
+     * @param idPageDto
+     * @return
+     */
+    @Override
+    public RPage<UserVo> listCommonFollow(IdPageDto idPageDto) {
+        List<Long> followList1 = getFollowList(idPageDto.getId());
+        if( followList1.isEmpty()){
+            return new RPage<>(0L, null);
+        }
+        List<Long> followList2 = getFollowList(CurrentHolder.getCurrentUser().getId());
+        if( followList2.isEmpty()){
+            return new RPage<>(0L, null);
+        }
+        //求交集
+        List<Long> commonFollowIds = followList1.stream().filter(followList2::contains).toList();
+        if( commonFollowIds.isEmpty()){
+            return new RPage<>(0L, null);
+        }
+        //截取列表
+        List<Long> ids = commonFollowIds.subList(idPageDto.getCurrentPage()*idPageDto.getPageSize() , Math.min(commonFollowIds.size(), idPageDto.getPageSize()));
+        List<UserVo> userVoList = userService.selectUserVoListByIds(ids);
+        return new RPage<>((long) ids.size(), userVoList);
+    }
+
+
 }

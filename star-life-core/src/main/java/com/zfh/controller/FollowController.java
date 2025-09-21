@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * <p>
- * 用户关注表 前端控制器
- * </p>
  *
+ * 用户关注表
  * @author author
  * @since 2025-09-19
  */
@@ -58,6 +56,26 @@ public class FollowController {
         return R.OK(followService.listFans(idPageDto));
     }
 
+    /**
+     * 查询关注列表
+     * @param idPageDto
+     * @return
+     */
+    @GetMapping("/followList")
+    public R followList(IdPageDto idPageDto) {
+        log.info("查询关注列表");
+        return R.OK(followService.listFollow(idPageDto));
+    }
 
+    /**
+     * 查询共同关注列表
+     * @param idPageDto
+     * @return
+     */
+    @GetMapping("/common")
+    public R common(IdPageDto idPageDto) {
+        log.info("查询共同关注列表：{}",idPageDto);
+        return R.OK(followService.listCommonFollow(idPageDto));
+    }
 
 }

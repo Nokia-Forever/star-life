@@ -10,7 +10,7 @@ if isFollow == "true" then
     else
         redis.call("SADD", key, fanId)
         -- 设置过期时间
-        --redis.call("EXPIRE", key, expireTime)
+        redis.call("EXPIRE", key, expireTime)
         return 1  -- 添加成功
     end
 elseif isFollow == "false" then
@@ -25,7 +25,7 @@ elseif isFollow == "false" then
             redis.call("DEL", key)
         else
             -- 集合不为空则更新过期时间
-            --redis.call("EXPIRE", key, expireTime)
+            redis.call("EXPIRE", key, expireTime)
         end
         return 1  -- 删除成功
     end

@@ -37,4 +37,18 @@ public interface IFollowService extends IService<Follow> {
      * @return
      */
     RPage<UserVo> listFans(IdPageDto idPageDto);
+
+    /**
+     * 关注列表
+     * @param idPageDto
+     * @return
+     */
+    RPage<UserVo> listFollow(IdPageDto idPageDto);
+
+    /**
+     * 共同关注列表
+     * @param idPageDto
+     * @return
+     */
+    RPage<UserVo> listCommonFollow(IdPageDto  idPageDto);
 }
