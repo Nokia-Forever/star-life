@@ -8,6 +8,7 @@
         <result property="userId" column="user_id"/>
         <result property="typeId" column="type_id"/>
         <result property="address" column="address"/>
+        <result property="status" column="status"/>
         <result property="coverImage" column="cover_image"/>
         <result property="avgPrice" column="avg_price"/>
         <result property="likeCount" column="like_count"/>
@@ -18,7 +19,17 @@
         <result property="updateTime" column="update_time"/>
         <association property="shopDetail" select="com.zfh.mapper.ShopDetailMapper.selectById" column="id"/>
     </resultMap>
+
+
+
     <select id="getInfoById" resultMap="shopVo">
         select * from shop where id = #{id}
     </select>
+    <select id="getBusinessHoursList" resultType="com.zfh.entity.BusinessHours" >
+            select s.id as id,sd.business_hours as businessHours
+            from shop s
+                     left join shop_detail sd on s.id = sd.shop_id
+            where s.status = 1
+    </select>
+
 </mapper>

@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zfh.constant.*;
 import com.zfh.dto.ShopDto;
-import com.zfh.entity.Shop;
-import com.zfh.entity.ShopDetail;
-import com.zfh.entity.Staff;
-import com.zfh.entity.User;
+import com.zfh.entity.*;
 import com.zfh.exception.ShopException;
 import com.zfh.mapper.ShopMapper;
 import com.zfh.service.IShopDetailService;
@@ -16,7 +13,6 @@ import com.zfh.service.IStaffService;
 import com.zfh.service.IUserService;
 import com.zfh.utils.CurrentHolder;
 import com.zfh.vo.ShopVo;
-import com.zfh.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -24,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -107,5 +105,14 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Override
     public ShopVo getInfoById(Long id) {
         return shopMapper.getInfoById(id);
+    }
+
+    /**
+     * 获取上线店铺营业时间
+     * @return
+     */
+    @Override
+    public List<BusinessHours> getBusinessHoursList() {
+        return shopMapper.getBusinessHoursList();
     }
 }

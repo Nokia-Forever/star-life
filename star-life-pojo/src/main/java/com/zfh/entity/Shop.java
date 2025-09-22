@@ -53,7 +53,7 @@ public class Shop implements Serializable {
     private String address;
 
     /**
-     * 状态：0-关闭，1-营业
+     * 状态：0-关闭，1-上线
      */
     private Integer status;
 

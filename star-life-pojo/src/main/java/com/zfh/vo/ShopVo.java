@@ -41,6 +41,10 @@ public class ShopVo implements Serializable {
      */
     private String address;
 
+    /**
+     * 状态 0-关闭，1-上线
+     */
+    private Integer status;
 
     /**
      * 封面图URL

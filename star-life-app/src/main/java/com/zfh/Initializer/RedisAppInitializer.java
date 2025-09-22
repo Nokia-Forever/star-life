@@ -1,15 +1,21 @@
 package com.zfh.Initializer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.RedisKeyConstant;
+import com.zfh.entity.BusinessHours;
 import com.zfh.entity.Role;
 import com.zfh.service.IRoleService;
+import com.zfh.service.IShopService;
 import com.zfh.service.IShopTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,13 +34,39 @@ public class RedisAppInitializer implements ApplicationRunner {
     private ObjectMapper objectMapper;
     @Autowired
     private IShopTypeService shopTypeService;
+    @Autowired
+    private IShopService shopService;
     @Override
     public void run(ApplicationArguments args)  {
         //初始化角色key
         initRole();
         //初始化商铺类型key
         initShopType();
+        //初始化商铺状态
+        initShopStatus();
+    }
 
+    //初始化商铺状态
+    private void initShopStatus() {
+        //数据库查找上线的店铺,保留他们的营业时间
+        List<BusinessHours> businessHoursList = shopService.getBusinessHoursList();
+
+
+
+
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            HashOperations<String, String, String> hashOps = stringRedisTemplate.opsForHash();
+            for (BusinessHours businessHours : businessHoursList) {
+                //解析商铺营业时间
+                try {
+                    Map<String,String> map = objectMapper.readValue(businessHours.getBusinessHours(), Map.class);
+                    hashOps.putAll(RedisKeyConstant.SHOP_BUSINESS_KEY + businessHours.getId(), map);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("解析失败");
+                }
+            }
+            return null;
+        });
 
     }
 

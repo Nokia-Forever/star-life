@@ -1,9 +1,12 @@
 package com.zfh.service;
 
-import com.zfh.dto.ShopDto;
-import com.zfh.entity.Shop;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zfh.dto.ShopDto;
+import com.zfh.entity.BusinessHours;
+import com.zfh.entity.Shop;
 import com.zfh.vo.ShopVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -28,4 +31,10 @@ public interface IShopService extends IService<Shop> {
      * @return
      */
     ShopVo getInfoById(Long id);
+
+    /**
+     * 获取上线店铺营业时间列表
+     * @return
+     */
+    List<BusinessHours> getBusinessHoursList();
 }

@@ -23,4 +23,5 @@ public class RedisKeyConstant {
     public static final String USER_SHOP_ROLE_KEY = "starLife:user:shopRole";
     public static final Long USER_SHOP_ROLE_EXPIRE_TIME = 86400000L;//外置单位为毫秒(24小时)
 
+    public static final String SHOP_BUSINESS_KEY = "starLife:shop:business:";
 }
