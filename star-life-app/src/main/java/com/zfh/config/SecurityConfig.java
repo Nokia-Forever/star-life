@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 /**
  * 登录认证配置
  */
+@EnableMethodSecurity(prePostEnabled = true)
 @Configuration
 public class SecurityConfig {
     @Autowired
@@ -97,7 +99,6 @@ public class SecurityConfig {
     //配置安全拦截机制
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource, AuthenticationManager authenticationManager) throws Exception {
-
         //合并不需身份验证的路径
         String[] array = Stream.of(urlConfig.CLIENT_WHITE_URL_LIST, urlConfig.ADMIN_WHITE_URL_LIST, urlConfig.COMMON_WHITE_URL_LIST)
                 .flatMap(List::stream)

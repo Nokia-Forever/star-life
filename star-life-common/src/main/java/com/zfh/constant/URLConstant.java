@@ -16,6 +16,11 @@ public class URLConstant {
     //验证码URl
     public static final String CAPTCHA_URL = "/common/captcha";
 
+    //商铺白名单 URL
+    public static final String SHOP_WHITE_URL = "/client/shop/white/**";
+    //用户白名单 URL
+    public static final String USER_WHITE_URL = "/client/user/white/**";
+
 
 
 }

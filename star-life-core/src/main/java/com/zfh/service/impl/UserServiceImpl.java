@@ -69,10 +69,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //根据用户名查询用户
         User user = this.getOne(new QueryWrapper<User>().eq("username", username));
         if (user == null) {
+            //redis保存用户信息
             stringRedisTemplate.opsForValue().increment(RedisKeyConstant.USER_LOCK_KEY + username);
             stringRedisTemplate.expire(RedisKeyConstant.USER_LOCK_KEY + username, RedisKeyConstant.USER_LOCK_EXPIRE_TIME, TimeUnit.MILLISECONDS);
             throw new UsernameNotFoundException(ExceptionConstant.USER_NOT_EXIST);
         }
+
         return user;
     }
 

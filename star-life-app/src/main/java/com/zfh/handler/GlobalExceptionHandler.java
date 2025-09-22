@@ -1,10 +1,15 @@
 package com.zfh.handler;
 
+import com.zfh.enumeration.CodeEnum;
 import com.zfh.exception.BaseException;
 import com.zfh.exception.UserException;
 import com.zfh.result.R;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
@@ -38,10 +43,31 @@ public class GlobalExceptionHandler {
         return R.FAIL(e.getMessage());
     }
 
-    // 处理其他异常
-    @ExceptionHandler(Exception.class)
-    public R handleException(Exception e) {
-        return R.FAIL(e.getMessage());
+    /**
+     * 处理权限不足异常
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public R handleAccessDeniedException(AccessDeniedException e) {
+        return R.FAIL(CodeEnum.FORBIDDEN);
     }
+
+    /**
+     * 处理认证异常
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public R handleAuthenticationException(AuthenticationException e) {
+        return R.FAIL(CodeEnum.UNAUTHORIZED);
+    }
+
+//    /**
+//     * 全局异常
+//      */
+//
+//    @ExceptionHandler(Exception.class)
+//    public R handleException(Exception e) {
+//        return R.FAIL(e.getMessage());
+//    }
 
 }

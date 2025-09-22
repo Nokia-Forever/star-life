@@ -71,7 +71,7 @@ public class UserController {
      * @param id
      * @return
      */
-    @GetMapping("/info/{id}")
+    @GetMapping("/white/info/{id}")
     public R getUserInfo(@PathVariable Long id) {
         log.info("查询用户信息：{}", id);
         return R.OK(userService.getInfoById(id));

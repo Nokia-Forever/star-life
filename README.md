@@ -3,10 +3,11 @@
 初步实现:\
 1.用户端的SpringSecurity框架的集成\
 2.数据库存储采用Mysql,缓冲采用redis\
+3.采用了定时任务,redis初始化,关闭监听器\
 
 所用技术:
 mysql,redis,lombok,mybatis-plus,jjwt,hutool-captcha,jackson........
-spring:springboot,springSecurity,spring-cache,spring-validator,web
+spring:springboot,springSecurity,spring-cache,spring-validator,web,spring-task
 模块区分:\
 1.star-life-app 启动模块\
 2.star-life-common 通用模块\
@@ -19,3 +20,5 @@ spring:springboot,springSecurity,spring-cache,spring-validator,web
 1.用户:登录,注册,查询当前用户,更新当前用户,修改密码\
 2.关注:关注和取关,判断是否关注,获取粉丝列表,获取关注列表,共同关注\
 3.商铺类型:查询商铺类型\
+4.商铺:申请店铺(未完善),获取店铺详细信息\
+5.店员:

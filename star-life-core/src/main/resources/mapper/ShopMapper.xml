@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zfh.mapper.ShopMapper">
+
+    <resultMap id="shopVo" type="com.zfh.vo.ShopVo">
+        <id property="id" column="id"/>
+       <result property="name" column="name"/>
+        <result property="userId" column="user_id"/>
+        <result property="typeId" column="type_id"/>
+        <result property="address" column="address"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="avgPrice" column="avg_price"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="sold" column="sold"/>
+        <result property="rating" column="rating"/>
+        <result property="reviewCount" column="review_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="shopDetail" select="com.zfh.mapper.ShopDetailMapper.selectById" column="id"/>
+    </resultMap>
+    <select id="getInfoById" resultMap="shopVo">
+        select * from shop where id = #{id}
+    </select>
+</mapper>

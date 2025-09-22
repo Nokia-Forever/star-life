@@ -25,6 +25,8 @@ public class ShopTypeServiceImpl extends ServiceImpl<ShopTypeMapper, ShopType> i
      * 获取商铺类型列表
      * @return
      */
+    // 修改前: @Cacheable(key = "'list'", value = ":shopType")
+    // 修改后: 将value中的冒号去掉，避免生成starLife:shopType::list这种带有空层级的key
     @Cacheable(key = "'list'", value = ":shopType")
     @Override
     public List<ShopType> listShopType() {
