@@ -20,6 +20,8 @@ public class URLConstant {
     public static final String SHOP_WHITE_URL = "/client/shop/white/**";
     //用户白名单 URL
     public static final String USER_WHITE_URL = "/client/user/white/**";
+    //职员白名单
+    public static final String STAFF_WHITE_URL = "/client/staff/white/**";
 
 
 

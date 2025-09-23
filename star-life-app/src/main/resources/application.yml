@@ -24,7 +24,6 @@ spring:
     redis:
       key-prefix: starLife
 
-
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

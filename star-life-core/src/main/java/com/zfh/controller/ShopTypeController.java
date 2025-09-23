@@ -1,8 +1,6 @@
 package com.zfh.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zfh.entity.ShopType;
 import com.zfh.result.R;
 import com.zfh.service.IShopTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 商铺类型表
+ * 商铺类型controller
 
  * 客户端只有查看的权限
  * @author author

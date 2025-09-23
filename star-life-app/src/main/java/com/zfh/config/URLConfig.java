@@ -44,6 +44,7 @@ public class URLConfig {
         //ANT白名单
         CLIENT_WHITE_URL_LIST.add(URLConstant.SHOP_WHITE_URL);
         CLIENT_WHITE_URL_LIST.add(URLConstant.USER_WHITE_URL);
+        CLIENT_WHITE_URL_LIST.add(URLConstant.STAFF_WHITE_URL);
     }
 
     //初始化管理端白名单URL

@@ -38,4 +38,11 @@
             #{id}
         </foreach>
     </select>
+    <select id="selectUserInfoByUsername" resultMap="UserVorResultMap">
+        select id,nick_name,icon,user_type,last_login_time from user where username = #{username}
+
+    </select>
+    <select id="selectIdByUsername" resultType="java.lang.Long">
+        select id from user where username = #{username}
+    </select>
 </mapper>

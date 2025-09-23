@@ -40,4 +40,18 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<UserVo> selectUserVoListByIds(List<Long> ids);
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    UserVo selectUserInfoByUsername(String username);
+
+    /**
+     * 根据用户名查询id
+     * @param username
+     * @return
+     */
+    Long selectIdByUsername(String username);
 }

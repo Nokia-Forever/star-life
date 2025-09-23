@@ -200,5 +200,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userMapper.selectUserVoListByIds(ids);
     }
 
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    @Override
+    public UserVo getInfoByUsername(String username) {
+        UserVo userVo = userMapper.selectUserInfoByUsername(username);
+        return userVo;
+    }
+
+    /**
+     * 根据用户名查询用户id
+     * @param username
+     * @return
+     */
+    @Override
+    public Long getIdByUsername(String username) {
+        return userMapper.selectIdByUsername(username);
+    }
+
 
 }

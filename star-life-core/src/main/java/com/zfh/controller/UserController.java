@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @description 用户控制层
+ * 用户controller
  */
 @RestController
 @RequestMapping("/client/user")
@@ -71,10 +71,21 @@ public class UserController {
      * @param id
      * @return
      */
-    @GetMapping("/white/info/{id}")
+    @GetMapping("/white/infoById/{id}")
     public R getUserInfo(@PathVariable Long id) {
         log.info("查询用户信息：{}", id);
         return R.OK(userService.getInfoById(id));
+    }
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    @GetMapping("/white/infoByUsername/{username}")
+    public R getUserInfoByUsername(@PathVariable String username) {
+        log.info("查询用户信息：{}", username);
+        return R.OK(userService.getInfoByUsername(username));
     }
 
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  *
- * 用户关注表
+ * 用户关注controller
  * @author author
  * @since 2025-09-19
  */

@@ -31,5 +31,11 @@
                      left join shop_detail sd on s.id = sd.shop_id
             where s.status = 1
     </select>
+    <select id="getInfoByIds" resultMap="shopVo">
+        select * from shop where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 
 </mapper>

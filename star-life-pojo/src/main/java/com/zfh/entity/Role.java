@@ -41,5 +41,10 @@ public class Role implements Serializable {
      */
     private String description;
 
+    /**
+     * 权力权重
+     */
+    private Integer power;
+
 
 }

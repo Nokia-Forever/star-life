@@ -57,4 +57,18 @@ public interface IUserService extends UserDetailsService, IService<User> {
      * @return
      */
     List<UserVo> selectUserVoListByIds(List<Long> ids);
+
+    /**
+     * 根据用户名获取用户信息
+     * @param username
+     * @return
+     */
+    UserVo getInfoByUsername(String username);
+
+    /**
+     * 根据用户名获取用户id
+     * @param username
+     * @return
+     */
+    Long getIdByUsername(String username);
 }

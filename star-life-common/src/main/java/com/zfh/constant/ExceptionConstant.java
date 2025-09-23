@@ -34,4 +34,10 @@ public class ExceptionConstant {
     public static final String OPERATION_FAILED = "操作失败,请稍后再试";
     //不能关注自己
     public static final String CANNOT_FOLLOW_YOURSELF = "不能关注自己";
+
+    //非商家不可操作
+    public static final String NOT_BUSINESS = "非商家不可操作";
+    //权限不足
+    public static final String PERMISSION_DENIED = "权限不足";
+    public static final String USER_IS_STAFF = "该用户已加入";
 }

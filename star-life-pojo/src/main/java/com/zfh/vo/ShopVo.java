@@ -90,4 +90,9 @@ public class ShopVo implements Serializable {
      * 店铺详情
      */
     private ShopDetail shopDetail;
+
+    /**
+     * 营业状态
+     */
+    private Boolean businessStatus;
 }

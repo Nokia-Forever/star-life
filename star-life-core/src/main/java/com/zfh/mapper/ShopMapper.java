@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zfh.entity.BusinessHours;
 import com.zfh.entity.Shop;
 import com.zfh.vo.ShopVo;
+import org.apache.ibatis.annotations.MapKey;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,4 +33,12 @@ public interface ShopMapper extends BaseMapper<Shop> {
     **/
 
     List<BusinessHours> getBusinessHoursList();
+
+    /**
+     * 批量获取商铺信息
+     * @param ids
+     * @return
+     */
+    @MapKey("id")
+    Map<Long, ShopVo> getInfoByIds(List<Long> ids);
 }

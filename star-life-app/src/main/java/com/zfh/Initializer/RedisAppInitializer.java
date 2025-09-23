@@ -1,6 +1,5 @@
 package com.zfh.Initializer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.entity.BusinessHours;
@@ -8,6 +7,7 @@ import com.zfh.entity.Role;
 import com.zfh.service.IRoleService;
 import com.zfh.service.IShopService;
 import com.zfh.service.IShopTypeService;
+import com.zfh.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -36,8 +36,9 @@ public class RedisAppInitializer implements ApplicationRunner {
     private IShopTypeService shopTypeService;
     @Autowired
     private IShopService shopService;
+
     @Override
-    public void run(ApplicationArguments args)  {
+    public void run(ApplicationArguments args) {
         //初始化角色key
         initRole();
         //初始化商铺类型key
@@ -50,24 +51,7 @@ public class RedisAppInitializer implements ApplicationRunner {
     private void initShopStatus() {
         //数据库查找上线的店铺,保留他们的营业时间
         List<BusinessHours> businessHoursList = shopService.getBusinessHoursList();
-
-
-
-
-        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            HashOperations<String, String, String> hashOps = stringRedisTemplate.opsForHash();
-            for (BusinessHours businessHours : businessHoursList) {
-                //解析商铺营业时间
-                try {
-                    Map<String,String> map = objectMapper.readValue(businessHours.getBusinessHours(), Map.class);
-                    hashOps.putAll(RedisKeyConstant.SHOP_BUSINESS_KEY + businessHours.getId(), map);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException("解析失败");
-                }
-            }
-            return null;
-        });
-
+        RedisUtils.shopStatusHandle(businessHoursList,objectMapper,stringRedisTemplate);
     }
 
     //初始化角色key
@@ -80,8 +64,8 @@ public class RedisAppInitializer implements ApplicationRunner {
             ValueOperations<String, String> valueOps = stringRedisTemplate.opsForValue();
             for (Role role : list) {
                 Map<String, String> map = new HashMap<>();
-                objectMapper.convertValue(role, Map.class).forEach((k, v)->{
-                    map.put(k.toString(), v==null?null:v.toString());
+                objectMapper.convertValue(role, Map.class).forEach((k, v) -> {
+                    map.put(k.toString(), v == null ? null : v.toString());
                 });
                 // 使用角色ID作为hash的key，角色名称作为value存储
                 hashOps.putAll(RedisKeyConstant.STAFF_ROLE_KEY + role.getId(), map);
