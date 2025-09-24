@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCaching
 @EnableScheduling
 @MapperScan("com.zfh.mapper")
-public class TasteNotesAppApplication {
+public class StarLifeAppApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TasteNotesAppApplication.class, args);
+        SpringApplication.run(StarLifeAppApplication.class, args);
     }
 
 }

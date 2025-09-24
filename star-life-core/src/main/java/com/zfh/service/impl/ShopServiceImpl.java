@@ -1,10 +1,12 @@
 package com.zfh.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.*;
+import com.zfh.dto.ShopBusinessHoursDto;
 import com.zfh.dto.ShopDto;
+import com.zfh.dto.ShopUpdateDto;
 import com.zfh.entity.*;
 import com.zfh.exception.ShopException;
 import com.zfh.mapper.ShopMapper;
@@ -90,7 +92,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
 
         //更改用户信息
         stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_TOKEN_KEY + userId, "user_type", String.valueOf(UserConstant.USER_TYPE_BUSINESS));
-        userService.update(new UpdateWrapper<User>().set("user_type", UserConstant.USER_TYPE_BUSINESS));
+        userService.beBussiness(userId);
 
         //设立CEO,保存职称
         Long roleId = Long.parseLong(Objects.requireNonNull(stringRedisTemplate.opsForValue().get(RedisKeyConstant.STAFF_ROLE_KEY + StaffConstant.CEO)));
@@ -115,9 +117,9 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     public ShopVo getInfoById(Long id) {
         ShopVo shopVo = shopMapper.getInfoById(id);
         //设置营业状态
-        if(shopVo.getStatus()== SHOP_ONLINE){
+        if (shopVo.getStatus() == SHOP_ONLINE) {
             shopVo.setBusinessStatus(getShopStatus(id));
-        }else {
+        } else {
             shopVo.setBusinessStatus(false);
         }
         return shopVo;
@@ -164,17 +166,17 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         //重新计算营业时间
         //为空,则关闭
         if (map.isEmpty()) {
-            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id, String.valueOf(SHOP_STATUS_AUTO_CLOSE));
+            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id.toString(), String.valueOf(SHOP_STATUS_AUTO_CLOSE));
         }
         //找不到对应的星期
         else if (!map.containsKey(now.getDayOfWeek().toString())) {
-            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id, String.valueOf(SHOP_STATUS_AUTO_CLOSE));
+            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id.toString(), String.valueOf(SHOP_STATUS_AUTO_CLOSE));
         }
         //不在营业时间
         else if (!TimeUtils.isInTimeRange(now.toLocalTime(), map.get(now.getDayOfWeek().toString()))) {
-            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id, String.valueOf(SHOP_STATUS_AUTO_CLOSE));
+            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id.toString(), String.valueOf(SHOP_STATUS_AUTO_CLOSE));
         } else {
-            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id, String.valueOf(SHOP_STATUS_AUTO_OPEN));
+            stringRedisTemplate.opsForHash().put(RedisKeyConstant.SHOP_STATUS_KEY, id.toString(), String.valueOf(SHOP_STATUS_AUTO_OPEN));
         }
         return 1;
     }
@@ -193,6 +195,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
 
     /**
      * 批量获取商铺信息
+     *
      * @param ids
      * @return
      */
@@ -201,12 +204,82 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         Map<Long, ShopVo> shopVo = shopMapper.getInfoByIds(ids);
         //设置营业状态
         shopVo.forEach((id, shopVop) -> {
-            if(shopVop.getStatus()== SHOP_ONLINE){
+            if (shopVop.getStatus() == SHOP_ONLINE) {
                 shopVop.setBusinessStatus(getShopStatus(id));
-            }else {
+            } else {
                 shopVop.setBusinessStatus(false);
             }
         });
         return shopVo;
     }
+
+    /**
+     * 更改商铺营业状态
+     *
+     * @param status
+     * @param shopId
+     * @return
+     */
+    @Override
+    public int updateShopStatus(Long shopId, Boolean status) {
+        if (status) {
+            //更新数据库
+            update(new LambdaUpdateWrapper<Shop>().set(Shop::getStatus, SHOP_ONLINE).eq(Shop::getId, shopId));
+            //增加营业状态,刚上线为手动营业状态
+            stringRedisTemplate.opsForHash()
+                    .put(RedisKeyConstant.SHOP_STATUS_KEY, shopId.toString(), String.valueOf(SHOP_STATUS_MANUAL_OPEN));
+        } else {
+            //更新数据库
+            update(new LambdaUpdateWrapper<Shop>()
+                    .set(Shop::getStatus, SHOP_OFFLINE).eq(Shop::getId, shopId));
+            //删除营业状态
+            stringRedisTemplate.opsForHash().delete(RedisKeyConstant.SHOP_STATUS_KEY, shopId.toString());
+        }
+        return 1;
+    }
+
+    /**
+     * 修改商铺信息
+     *
+     * @param shopUpdateDto
+     * @return
+     */
+    @Transactional
+    @Override
+    public boolean updateShop(ShopUpdateDto shopUpdateDto) {
+        Shop shop = new Shop();
+        shop.setId(shopUpdateDto.getId());
+        shop.setName(shopUpdateDto.getName());
+        shop.setAddress(shopUpdateDto.getAddress());
+        shop.setCoverImage(shopUpdateDto.getCoverImage());
+        //更新商铺详情
+        LambdaUpdateWrapper<ShopDetail> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(ShopDetail::getShopId, shopUpdateDto.getId());
+
+        if (shopUpdateDto.getDescription() != null) {
+            updateWrapper.set(ShopDetail::getDescription, shopUpdateDto.getDescription());
+        }
+
+        if (shopUpdateDto.getContactPhone() != null) {
+            updateWrapper.set(ShopDetail::getContactPhone, shopUpdateDto.getContactPhone());
+        }
+
+        return shopDetailService.update(updateWrapper);
+    }
+
+    /**
+     * 修改商铺营业时间
+     *
+     * @param shopBusinessHoursDto
+     * @return
+     */
+    @Override
+    public boolean updateBusinessHours(ShopBusinessHoursDto shopBusinessHoursDto) {
+        return shopDetailService.update(new LambdaUpdateWrapper<ShopDetail>()
+                .set(ShopDetail::getBusinessHours, shopBusinessHoursDto.getBusinessHours())
+                .eq(ShopDetail::getShopId, shopBusinessHoursDto.getId()));
+    }
+
+    //TODO 删除店铺
+
 }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zfh.dto.StaffDto;
 import com.zfh.entity.Role;
 import com.zfh.entity.Staff;
-import com.zfh.vo.ShopRoleVo;
+import com.zfh.vo.UserRoleVo;
 
 import java.util.List;
 
@@ -26,11 +26,6 @@ public interface IStaffService extends IService<Staff> {
      */
     List<Role> getRoleLessPowerList(Long shopId, Long roleId);
 
-    /**
-     * 获取店员关联的店铺列表
-     * @return
-     */
-    List<ShopRoleVo> getShopList();
 
     /**
      * 添加店员
@@ -38,4 +33,26 @@ public interface IStaffService extends IService<Staff> {
      * @return
      */
     int addStaff(StaffDto staffDto);
+
+    /**
+     * 修改职员角色
+     * @param staffDto
+     * @return
+     */
+    int updateStaff(StaffDto staffDto);
+
+    /**
+     * 获取店员列表
+     * @param shopId
+     * @return
+     */
+    List<UserRoleVo> getStaffList(Long shopId);
+
+    /**
+     * 获取店员信息
+     * @param shopId
+     * @param id
+     * @return
+     */
+    UserRoleVo getStaffInfo(Long shopId, Long id);
 }

@@ -39,10 +39,11 @@ public interface IUserService extends UserDetailsService, IService<User> {
 
     /**
      * 修改当前用户密码
+     *
      * @param userPasswordDto
      * @return
      */
-    int updateCurrentPassword(UserPasswordDto userPasswordDto);
+    boolean updateCurrentPassword(UserPasswordDto userPasswordDto);
 
     /**
      * 获取用户信息
@@ -71,4 +72,12 @@ public interface IUserService extends UserDetailsService, IService<User> {
      * @return
      */
     Long getIdByUsername(String username);
+
+    /**
+     * 成为商家
+     *
+     * @param userId
+     * @return
+     */
+    boolean beBussiness(Long userId);
 }

@@ -4,14 +4,14 @@ import com.zfh.entity.Role;
 import lombok.Data;
 
 /**
- * 商铺角色信息
+ * 用户角色信息
  */
 @Data
-public class ShopRoleVo {
+public class UserRoleVo {
     /**
-     * 商铺信息
+     * 用户信息
      */
-    private ShopVo shopVo;
+    private UserVo userVo;
     /**
      * 角色信息
      */

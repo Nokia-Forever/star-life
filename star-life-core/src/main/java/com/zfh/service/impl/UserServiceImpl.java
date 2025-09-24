@@ -71,7 +71,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (user == null) {
             //redis保存用户信息
             stringRedisTemplate.opsForValue().increment(RedisKeyConstant.USER_LOCK_KEY + username);
-            stringRedisTemplate.expire(RedisKeyConstant.USER_LOCK_KEY + username, RedisKeyConstant.USER_LOCK_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            stringRedisTemplate.expire(RedisKeyConstant.USER_LOCK_KEY + username,
+                    RedisKeyConstant.USER_LOCK_EXPIRE_TIME, TimeUnit.MILLISECONDS);
             throw new UsernameNotFoundException(ExceptionConstant.USER_NOT_EXIST);
         }
 
@@ -157,11 +158,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /**
      * 修改当前用户密码
+     *
      * @param userPasswordDto
      * @return
      */
     @Override
-    public int updateCurrentPassword(UserPasswordDto userPasswordDto) {
+    public boolean updateCurrentPassword(UserPasswordDto userPasswordDto) {
         //获取当前线程用户
         User user = CurrentHolder.getCurrentUser();
         String password = userMapper.getPasswordById(user.getId());
@@ -172,10 +174,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         // Lambda方式（类型安全，推荐）
-        LambdaUpdateWrapper<User> lambdaWrapper = new LambdaUpdateWrapper<>();
-        lambdaWrapper.set(User::getPassword, passwordEncoder.encode(userPasswordDto.getNewPassword()))
-                .eq(User::getId, user.getId());
-        return userMapper.update(null, lambdaWrapper);
+        return update(new LambdaUpdateWrapper<User>()
+                .set(User::getPassword, passwordEncoder.encode(userPasswordDto.getNewPassword()))
+                .eq(User::getId, user.getId()));
     }
 
     /**
@@ -221,5 +222,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userMapper.selectIdByUsername(username);
     }
 
-
+    /**
+     * 成为商家
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public boolean beBussiness(Long userId) {
+        return update(new LambdaUpdateWrapper<User>()
+                .set(User::getUserType, UserConstant.USER_TYPE_BUSINESS)
+                .eq(User::getId, userId));
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 
 @SpringBootTest
-class TasteNotesAppApplicationTests {
+class StarLifeAppApplicationTests {
 
     @Test
     void contextLoads() {

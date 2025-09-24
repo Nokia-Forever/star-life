@@ -1,6 +1,7 @@
 package com.zfh.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.constant.UserConstant;
@@ -8,6 +9,7 @@ import com.zfh.entity.Staff;
 import com.zfh.entity.User;
 import com.zfh.property.JwtProperties;
 import com.zfh.service.IStaffService;
+import com.zfh.service.IUserService;
 import com.zfh.utils.HttpUtils;
 import com.zfh.utils.JwtUtils;
 import com.zfh.vo.UserLoginVo;
@@ -17,12 +19,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private ObjectMapper objectMapper;
     @Autowired
     private IStaffService staffService;
+    @Autowired
+    @Lazy
+    private IUserService userService;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         //获取当前实体对象id
@@ -48,7 +55,15 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         Map<String, Object> claims = Map.of("id", user.getId());
 
         UserLoginVo userLoginVo = new UserLoginVo();
+
+        user.setLastLoginTime(new Date());
+        //更新最后登录时间
+        userService.update(new LambdaUpdateWrapper<User>()
+                .set(User::getLastLoginTime, new Date())
+                .eq(User::getId, user.getId()));
         BeanUtils.copyProperties(user, userLoginVo);
+
+
 
         //登录成功生成 token
         String token = JwtUtils.generateToken(jwtProperties.getUserSecret(),  claims );
@@ -80,6 +95,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 stringRedisTemplate.expire(RedisKeyConstant.USER_SHOP_ROLE_KEY + user.getId(), RedisKeyConstant.USER_SHOP_ROLE_EXPIRE_TIME, TimeUnit.MILLISECONDS);
             }
         }
+
+
 
         //响应数据
         HttpUtils.writeSuccessJson(response, userLoginVo, objectMapper);

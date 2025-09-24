@@ -79,7 +79,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         // redis操作(lua脚本)
         boolean res = Objects.requireNonNull(stringRedisTemplate.execute(FOLLOW_SCRIPT,
                 List.of(RedisKeyConstant.USER_FOLLOW_KEY + currentUserId.toString()),
-                id.toString(), RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME.toString(), isFollow.toString())).intValue() == 1L;
+                id.toString(), RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME.toString(), isFollow.toString()))
+                .intValue() == 1L;
 
         if(!res){
             throw  new BaseException(ExceptionConstant.OPERATION_FAILED);
@@ -94,10 +95,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
             userInfoService.changeFollowingCount(currentUserId, 1);
         }
         else{
-            LambdaQueryWrapper<Follow> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(Follow::getFanId, currentUserId)
-                    .eq(Follow::getUserId,id);
-            followMapper.delete( wrapper);
+            followMapper.delete( new LambdaQueryWrapper<Follow>().eq(Follow::getFanId, currentUserId)
+                    .eq(Follow::getUserId,id));
             //粉丝数量-1
             userInfoService.changeFansCount(id, -1);
             //关注数量-1
@@ -123,7 +122,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         //判断有没有这个key
         if(Boolean.TRUE.equals(stringRedisTemplate.hasKey(RedisKeyConstant.USER_FOLLOW_KEY + id))){
             Set<String> members = stringRedisTemplate.opsForSet().members(RedisKeyConstant.USER_FOLLOW_KEY + id);
-            stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id, RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id,
+                    RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
             return members.stream().filter(pid-> !pid.equals("-1")).map(Long::valueOf).toList();
         }
         //查询数据库,并缓存到redis
@@ -132,12 +132,14 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         //如果没有关注
         if(ids.isEmpty()){
             stringRedisTemplate.opsForSet().add(RedisKeyConstant.USER_FOLLOW_KEY + id, "-1");
-            stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id, RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id,
+                    RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
             return List.of();
         }
         //一次性添加到redis
         stringRedisTemplate.opsForSet().add(RedisKeyConstant.USER_FOLLOW_KEY + id,stringIds.toArray(new String[0]));
-        stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id, RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+        stringRedisTemplate.expire(RedisKeyConstant.USER_FOLLOW_KEY + id,
+                RedisKeyConstant.USER_FOLLOW_EXPIRE_TIME, TimeUnit.MILLISECONDS);
         return ids;
     }
 
@@ -148,7 +150,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
      */
     @Override
     public RPage<UserVo> listFans(IdPageDto idPageDto) {
-        IPage<Long> ids = followMapper.selectFanIdsByUserId(new Page<>(idPageDto.getCurrentPage(), idPageDto.getPageSize()), idPageDto.getId());
+        IPage<Long> ids = followMapper.selectFanIdsByUserId(
+                new Page<>(idPageDto.getCurrentPage(), idPageDto.getPageSize()), idPageDto.getId());
         if (ids.getRecords().isEmpty()){
             return new RPage<>(0L, null);
         }
@@ -165,13 +168,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
     @Override
     public RPage<UserVo> listFollow(IdPageDto idPageDto) {
         List<Long> followList = getFollowList(idPageDto.getId());
-        if( followList.isEmpty()){
-            return new RPage<>(0L, null);
-        }
-        //截取
-        List<Long> ids = followList.subList(idPageDto.getCurrentPage()*idPageDto.getPageSize() , Math.min(followList.size(), idPageDto.getPageSize()));
-        List<UserVo> userVoList = userService.selectUserVoListByIds(ids);
-        return new RPage<>((long) ids.size(), userVoList);
+        //分页查询
+        return pageQueryFollows(idPageDto, followList);
     }
 
     /**
@@ -191,11 +189,18 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         }
         //求交集
         List<Long> commonFollowIds = followList1.stream().filter(followList2::contains).toList();
-        if( commonFollowIds.isEmpty()){
+        //分页查询
+        return pageQueryFollows(idPageDto, commonFollowIds);
+    }
+
+    //分页查询
+    private RPage<UserVo> pageQueryFollows(IdPageDto idPageDto, List<Long> followIds) {
+        if( followIds.isEmpty()){
             return new RPage<>(0L, null);
         }
         //截取列表
-        List<Long> ids = commonFollowIds.subList(idPageDto.getCurrentPage()*idPageDto.getPageSize() , Math.min(commonFollowIds.size(), idPageDto.getPageSize()));
+        List<Long> ids = followIds.subList(
+                idPageDto.getCurrentPage()* idPageDto.getPageSize() , Math.min(followIds.size(), idPageDto.getPageSize()));
         List<UserVo> userVoList = userService.selectUserVoListByIds(ids);
         return new RPage<>((long) ids.size(), userVoList);
     }

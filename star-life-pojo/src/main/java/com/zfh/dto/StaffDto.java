@@ -1,6 +1,5 @@
 package com.zfh.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -19,9 +18,15 @@ public class StaffDto {
      */
     @NotNull
     private Long roleId;
+
     /**
      * 职员用户名
      */
-    @NotBlank
     private String username;
+
+
+    /**
+     * 职员Id
+     */
+    private Long staffId;
 }

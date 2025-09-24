@@ -1,7 +1,9 @@
 package com.zfh.controller;
 
 
+import com.zfh.dto.ShopBusinessHoursDto;
 import com.zfh.dto.ShopDto;
+import com.zfh.dto.ShopUpdateDto;
 import com.zfh.result.R;
 import com.zfh.service.IShopService;
 import jakarta.validation.Valid;
@@ -93,6 +95,47 @@ public class ShopController {
     public R deleteShopStatus(@RequestParam Long id) {
         return R.OK(shopService.deleteShopStatusManual(id));
     }
+
+    /**
+     * 修改商铺状态
+     * @param status
+     * @param id
+     * @return
+     */
+    @PreAuthorize("hasAnyRole(#id + '_' + T(com.zfh.constant.StaffConstant).CEO," +
+            "#id + '_' + T(com.zfh.constant.StaffConstant).Manger) " )
+    @PutMapping("/status/{id}/{status}")
+    public R updateShopStatus(@PathVariable Long id, @PathVariable Boolean status) {
+        return R.OK(shopService.updateShopStatus(id,status));
+    }
+
+    /**
+     * 修改商铺信息
+     *
+     * @param shopUpdateDto
+     * @return
+     */
+    @PreAuthorize("hasAnyRole(#shopUpdateDto.id + '_' + T(com.zfh.constant.StaffConstant).CEO," +
+            "#shopUpdateDto.id + '_' + T(com.zfh.constant.StaffConstant).Manger) " )
+    @PutMapping
+    public R updateShop(@RequestBody @Valid ShopUpdateDto shopUpdateDto) {
+        log.info("修改商铺信息：{}", shopUpdateDto);
+        return R.OK(shopService.updateShop(shopUpdateDto));
+    }
+
+    /**
+     * 修改商铺营业时间
+     * @param shopBusinessHoursDto
+     * @return
+     */
+    @PreAuthorize("hasAnyRole(#shopBusinessHoursDto.id + '_' + T(com.zfh.constant.StaffConstant).CEO," +
+            "#shopBusinessHoursDto.id + '_' + T(com.zfh.constant.StaffConstant).Manger) " )
+    @PutMapping("/businessHours")
+    public R updateBusinessHours(@RequestBody @Valid ShopBusinessHoursDto shopBusinessHoursDto) {
+        log.info("修改商铺营业时间：{}", shopBusinessHoursDto);
+        return R.OK(shopService.updateBusinessHours(shopBusinessHoursDto));
+    }
+
 
 }
 

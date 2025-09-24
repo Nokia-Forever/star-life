@@ -1,7 +1,10 @@
 package com.zfh.mapper;
 
-import com.zfh.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zfh.entity.Role;
+import org.apache.ibatis.annotations.MapKey;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleMapper extends BaseMapper<Role> {
 
+    /**
+     * 获取角色列表
+     * @return
+     */
+    @MapKey("id")
+    Map<Long, Map> listMap();
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zfh.mapper.RoleMapper">
+
+
+    <select id="listMap" resultType="map">
+        SELECT
+            CAST(id AS SIGNED) AS id,
+        name,
+        description,
+        power
+        FROM role
+    </select>
+</mapper>

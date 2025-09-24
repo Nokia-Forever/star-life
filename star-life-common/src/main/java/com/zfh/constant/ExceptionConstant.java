@@ -40,4 +40,7 @@ public class ExceptionConstant {
     //权限不足
     public static final String PERMISSION_DENIED = "权限不足";
     public static final String USER_IS_STAFF = "该用户已加入";
+
+    //用户不是该店职员
+    public static final String USER_IS_NOT_STAFF ="用户不是该店职员" ;
 }

@@ -1,0 +1,51 @@
+//回收站
+/**
+     * 获取店员角色列表
+     * @return
+     */
+    @Override
+    public List<ShopRoleVo> getShopList() {
+        //获取当前登录用户
+        User user = CurrentHolder.getCurrentUser();
+        //非商家不可获取
+        if(!user.getUserType().equals(UserConstant.USER_TYPE_BUSINESS)){
+            throw new StaffException(ExceptionConstant.NOT_BUSINESS);
+        }
+
+        //根据user_id查询
+        List<Staff> staffList = list(new LambdaQueryWrapper<Staff>().eq(Staff::getUserId, user.getId()));
+        if(staffList.isEmpty()){
+            return null;
+        }
+
+        //查询商铺信息
+        Map<Long, ShopVo> shopMap = shopService.getInfoByIds(staffList.stream().map(Staff::getShopId).toList());
+        if(shopMap.isEmpty()){
+            return null;
+        }
+
+        return staffList.stream().map(staff -> {
+            ShopRoleVo shopRoleVo = new ShopRoleVo();
+            shopRoleVo.setShopVo(shopMap.get(staff.getShopId()));
+            //角色信息从角色表获取
+            Map<Object, Object> map = stringRedisTemplate.opsForHash()
+                    .entries(RedisKeyConstant.STAFF_ROLE_KEY+staff.getRoleId());
+           shopRoleVo.setRole(objectMapper.convertValue(map, Role.class));
+            return shopRoleVo;
+        }).toList();
+    }
+
+/**
+ * 商铺角色信息
+ */
+@Data
+public class ShopRoleVo {
+    /**
+     * 商铺信息
+     */
+    private ShopVo shopVo;
+    /**
+     * 角色信息
+     */
+    private Role role;
+}

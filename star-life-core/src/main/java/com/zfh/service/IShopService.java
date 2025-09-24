@@ -1,7 +1,9 @@
 package com.zfh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zfh.dto.ShopBusinessHoursDto;
 import com.zfh.dto.ShopDto;
+import com.zfh.dto.ShopUpdateDto;
 import com.zfh.entity.BusinessHours;
 import com.zfh.entity.Shop;
 import com.zfh.vo.ShopVo;
@@ -68,4 +70,28 @@ public interface IShopService extends IService<Shop> {
      * @return
      */
     Map<Long, ShopVo> getInfoByIds(List<Long> ids);
+
+    /**
+     * 批量更新商铺状态
+     * @param status
+     * @param shopId
+     * @return
+     */
+    int updateShopStatus(Long shopId, Boolean status);
+
+    /**
+     * 修改商铺信息
+     *
+     * @param shopUpdateDto
+     * @return
+     */
+    boolean updateShop(ShopUpdateDto shopUpdateDto);
+
+    /**
+     * 修改商铺营业时间
+     *
+     * @param shopBusinessHoursDto
+     * @return
+     */
+    boolean updateBusinessHours(ShopBusinessHoursDto shopBusinessHoursDto);
 }

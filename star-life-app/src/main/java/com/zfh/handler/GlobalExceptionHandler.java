@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * 全局异常处理
  */
+//TODO 全局异常没配置完毕
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // 处理自定义异常
@@ -61,13 +62,15 @@ public class GlobalExceptionHandler {
         return R.FAIL(CodeEnum.UNAUTHORIZED);
     }
 
-//    /**
-//     * 全局异常
-//      */
-//
-//    @ExceptionHandler(Exception.class)
-//    public R handleException(Exception e) {
-//        return R.FAIL(e.getMessage());
-//    }
+
+
+    /**
+     * 全局异常
+      */
+
+    @ExceptionHandler(Exception.class)
+    public R handleException(Exception e) {
+        return R.FAIL(e.getMessage());
+    }
 
 }

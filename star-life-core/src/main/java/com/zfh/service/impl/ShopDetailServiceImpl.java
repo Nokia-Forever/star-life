@@ -39,9 +39,11 @@ public class ShopDetailServiceImpl extends ServiceImpl<ShopDetailMapper, ShopDet
      */
     @Override
     public Map<String, String> selectBusinessHoursById(Long id) {
-        LambdaQueryWrapper<ShopDetail> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.select(ShopDetail::getBusinessHours).eq(ShopDetail::getShopId, id);
-        ShopDetail shopDetail = shopDetailMapper.selectOne(queryWrapper);
+
+
+        ShopDetail shopDetail = shopDetailMapper.selectOne(
+                new LambdaQueryWrapper<ShopDetail>().select(ShopDetail::getBusinessHours)
+                        .eq(ShopDetail::getShopId, id));
         Map<String,String> map=new HashMap<>();
         //解析json
         try {

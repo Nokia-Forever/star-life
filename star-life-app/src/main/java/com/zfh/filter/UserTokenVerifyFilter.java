@@ -62,7 +62,6 @@ public class UserTokenVerifyFilter extends OncePerRequestFilter {
             return;
         }
 
-
         try {
             //获取token
             String token = request.getHeader(jwtProperties.getUserTokenName());

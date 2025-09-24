@@ -1,7 +1,9 @@
 package com.zfh.service;
 
-import com.zfh.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zfh.entity.Role;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +15,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRoleService extends IService<Role> {
 
+    /**
+     * 获取角色列表
+     *
+     * @return
+     */
+    Map<Long, Map> listMap();
 }
