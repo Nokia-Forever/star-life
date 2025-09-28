@@ -22,7 +22,7 @@ public class URLConstant {
     public static final String USER_WHITE_URL = "/client/user/white/**";
     //职员白名单
     public static final String STAFF_WHITE_URL = "/client/staff/white/**";
-
-
+    //博客白名单
+    public static final String BLOG_WHITE_URL = "/client/blog/white/**";
 
 }

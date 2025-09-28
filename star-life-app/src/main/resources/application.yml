@@ -1,49 +1,102 @@
 server:
   port: 8080
 
-
 spring:
+  #mysql
   datasource:
     username: root
     password: 123456
     url: jdbc:mysql://localhost:3306/taste_notes?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&tinyInt1isBit=false&allowLoadLocalInfile=true&allowLocalInfile=true&allowUrlInLocalInfile=true&allowPublicKeyRetrieval=true&allowPublicKeyRetrieval=true&allowPublicKeyRetrieval=true&allowPublicKeyRetrieval=true&allowPublic
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+    #redis
   data:
     redis:
       database: 0
       host: localhost
       port: 6379
+
+      #jackson
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
+    #ldap
   ldap:
     embedded:
       validation:
         enabled: true
+
+        #cache
   cache:
     redis:
       key-prefix: starLife
 
+      #file
+  servlet:
+    multipart:
+      max-file-size: 1MB
+
+      #ai
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus
+
+      image:
+        options:
+          model: qwen-image-plus
+      audio:
+        synthesis:
+          options:
+            model: qwen3-tts-flash-realtime
+    ollama:
+      base-url: http://127.0.0.1:11434
+      chat:
+        model: deepseek-r1:8b
+
+
+#mybatis- plus
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
   type-aliases-package: com.zfh.entity # 扫描的包
   mapper-locations: classpath*:mapper/*.xml
+
+
+
 com:
   zfh:
+    #jwt
     jwt:
       user-secret: zfh
       admin-secret: zfh
       user-token-name: authorization
+
+    #验证码
     captcha:
       user-enable: false
       user-length: 5
 
+    #阿里云
+    alioss:
+      endpoint: https://oss-cn-beijing.aliyuncs.com #bucket地址
+      bucketName: host-java #bucket名字
+      region: cn-beijing #ip
+      access-key-id: ${OSS_ACCESS_KEY_ID} #accessKeyId
+      access-key-secret: ${OSS_ACCESS_KEY_SECRET}  #accessKeySecret
+      project-name: star-lise
 
+#日志
 logging:
   level:
+    #把mybatis-plus的日志打印到控制台
     com.zfh.filter.UsernamePasswordJsonFilter: off
     com.zfh.mapper: debug
-#把mybatis-plus的日志打印到控制台
+    org.springframework.ai.chat.client.advisor: DEBUG
+
+
 
 

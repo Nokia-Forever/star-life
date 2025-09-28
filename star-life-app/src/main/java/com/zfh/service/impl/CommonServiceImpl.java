@@ -5,13 +5,17 @@ import cn.hutool.captcha.ICaptcha;
 import com.zfh.constant.ExceptionConstant;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.exception.BaseException;
+import com.zfh.exception.UploadException;
+import com.zfh.property.AliOssProperties;
 import com.zfh.property.CaptchaProperties;
 import com.zfh.service.CommonService;
+import com.zfh.utils.AliOssUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +30,8 @@ public class CommonServiceImpl implements CommonService {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private CaptchaProperties captchaProperties;
+    @Autowired
+    private AliOssProperties aliOssProperties;
     /**
      * 生成验证码
      * @param request
@@ -65,5 +71,26 @@ public class CommonServiceImpl implements CommonService {
         } catch (IOException e) {
             throw new BaseException(ExceptionConstant.CAPTCHA_GET_FAILED);
         }
+    }
+
+    /**
+     * 上传图片
+     * @param file
+     * @return
+     */
+    @Override
+    public String uploadImage(MultipartFile file) {
+       //只用图片类可以上传
+        String contentType = file.getContentType();
+        if(contentType ==null||!contentType.startsWith("image/")){
+            throw new UploadException(ExceptionConstant.IMAGE_FORMAT_ERROR);
+        }
+        String url = null;
+        try {
+            url = new AliOssUtil(aliOssProperties).upload(file.getBytes(),file.getOriginalFilename());
+        } catch (Exception e) {
+            throw new RuntimeException(ExceptionConstant.IMAGE_UPLOAD_FAILED);
+        }
+        return url;
     }
 }

@@ -7,6 +7,7 @@ import com.zfh.handler.LoginFailHandler;
 import com.zfh.handler.LoginSuccessHandler;
 import com.zfh.handler.LogoutHandlerImpl;
 import com.zfh.property.CaptchaProperties;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -49,6 +51,14 @@ public class SecurityConfig {
     private UserTokenVerifyFilter userTokenVerifyFilter;
     @Autowired
     private URLConfig urlConfig;
+
+    @PostConstruct
+    public void init() {
+        // 关键配置：启用线程继承
+        SecurityContextHolder.setStrategyName(
+                SecurityContextHolder.MODE_INHERITABLETHREADLOCAL
+        );
+    }
 
     //配置密码编码器
     @Bean

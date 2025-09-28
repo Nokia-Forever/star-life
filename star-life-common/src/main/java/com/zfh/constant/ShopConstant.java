@@ -13,4 +13,5 @@ public class ShopConstant {
     //0下线,1上线
     public static final int SHOP_ONLINE = 1;
     public static final int SHOP_OFFLINE = 0;
+
 }

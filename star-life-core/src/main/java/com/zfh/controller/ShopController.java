@@ -120,7 +120,9 @@ public class ShopController {
     @PutMapping
     public R updateShop(@RequestBody @Valid ShopUpdateDto shopUpdateDto) {
         log.info("修改商铺信息：{}", shopUpdateDto);
+
         return R.OK(shopService.updateShop(shopUpdateDto));
+
     }
 
     /**
@@ -136,7 +138,7 @@ public class ShopController {
         return R.OK(shopService.updateBusinessHours(shopBusinessHoursDto));
     }
 
-
+//TODO 分页查询
 }
 
 

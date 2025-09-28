@@ -43,4 +43,12 @@ public class ExceptionConstant {
 
     //用户不是该店职员
     public static final String USER_IS_NOT_STAFF ="用户不是该店职员" ;
+
+    //图片上传失败
+    public static final String IMAGE_UPLOAD_FAILED = "图片上传失败";
+    //图片格式错误
+    public static final String IMAGE_FORMAT_ERROR = "图片格式错误";
+
+    //此篇博客不存在
+    public static final String BLOG_NOT_EXIST = "此篇博客不存在";
 }

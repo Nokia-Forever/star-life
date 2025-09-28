@@ -54,13 +54,17 @@ public class UserTokenVerifyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //只校验用户请求,放行登录,注册
         String requestURI =request.getRequestURI();
-        //不是客户端请求或在客户端请求白名单中则放行
-        if (!requestURI.startsWith("/client")
-                || urlConfig.CLIENT_WHITE_URL_LIST.stream().anyMatch((pattern -> antPathMatcher.match(pattern, requestURI)))
+        //放行条件:
+        //1.在common白名单
+        //2.在client白名单
+        if (urlConfig.CLIENT_WHITE_URL_LIST.stream().anyMatch((pattern -> antPathMatcher.match(pattern, requestURI)))
+              || urlConfig.CLIENT_WHITE_URL_LIST.stream().anyMatch((pattern -> antPathMatcher.match(pattern, requestURI)))
         ) {
             filterChain.doFilter(request, response);
             return;
         }
+
+
 
         try {
             //获取token

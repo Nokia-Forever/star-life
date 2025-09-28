@@ -13,4 +13,5 @@ public class StaffConstant {
     public static final String Salesclerk = "Salesclerk";
     //客服(CustomerService)
     public static final String CustomerService = "CustomerService";
+
 }

@@ -116,6 +116,9 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Override
     public ShopVo getInfoById(Long id) {
         ShopVo shopVo = shopMapper.getInfoById(id);
+        if (shopVo == null) {
+            return null;
+        }
         //设置营业状态
         if (shopVo.getStatus() == SHOP_ONLINE) {
             shopVo.setBusinessStatus(getShopStatus(id));

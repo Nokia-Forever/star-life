@@ -6,14 +6,16 @@
 3.采用了定时任务,redis初始化,关闭监听器\
 
 所用技术:
-mysql,redis,lombok,mybatis-plus,jjwt,hutool-captcha,jackson........
+mysql,redis,lombok,mybatis-plus,jjwt,hutool-captcha,jackson,springai,ollama........
 spring:springboot,springSecurity,spring-cache,spring-validator,web,spring-task
+
 模块区分:\
 1.star-life-app 启动模块\
 2.star-life-common 通用模块\
 3.star-life-core 客户端核心模块\
 4.star-life-admin 管理模块\
 5.star-life-pojo 数据模块\ 
+6.star-life-ai 智能模块\
 
 功能实现:\
 客户端:\
@@ -21,4 +23,9 @@ spring:springboot,springSecurity,spring-cache,spring-validator,web,spring-task
 2.关注:关注和取关,判断是否关注,获取粉丝列表,获取关注列表,共同关注\
 3.商铺类型:查询商铺类型\
 4.商铺:申请店铺(未完善),定时任务判断店铺营业状态,获取店铺详细信息,手动开启或关闭商铺,清除手动处理营业状态,修改店铺状态,修改店铺信息,修改店铺营业时间\
-5.店员:获取当前用户角色下权重比自己小,添加店员,修改店员角色,获取店员列表,获取店员信息
+5.店员:获取当前用户角色下权重比自己小,添加店员,修改店员角色,获取店员列表,获取店员信息\
+6.博客:分页查询博客,添加博客,评论博客\
+
+
+AI模块:\
+1.ai生成博客点评\
