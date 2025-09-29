@@ -2,11 +2,13 @@ package com.zfh.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 博客DTO
  */
 @Data
-public class AICommentDto {
+public class AICommentDto implements Serializable {
     /**
      * 商铺id
      */
@@ -16,4 +18,6 @@ public class AICommentDto {
      * 提示内容
      */
     private String prompt;
+
+    private static final long serialVersionUID = 1L;
 }

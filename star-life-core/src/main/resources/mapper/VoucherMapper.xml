@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zfh.mapper.VoucherMapper">
+
+    <resultMap id="VoucherResultMap" type="com.zfh.vo.VoucherVo">
+        <id property="id" column="id" />
+        <result property="shopId" column="shop_id" />
+        <result property="title" column="title" />
+        <result property="subTitle" column="sub_title" />
+        <result property="rules" column="rules" />
+        <result property="payValue" column="pay_value" />
+        <result property="actualValue" column="actual_value" />
+        <result property="type" column="type" />
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <association property="seckillVoucher" column="id" select="com.zfh.mapper.SeckillVoucherMapper.selectById" />
+    </resultMap>
+
+    <resultMap id="VoucherOnlineResultMap" type="com.zfh.vo.VoucherVo">
+        <id property="id" column="id" />
+        <result property="shopId" column="shop_id" />
+        <result property="title" column="title" />
+        <result property="subTitle" column="sub_title" />
+        <result property="rules" column="rules" />
+        <result property="payValue" column="pay_value" />
+        <result property="actualValue" column="actual_value" />
+        <result property="type" column="type" />
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <association property="seckillVoucher" column="id" select="com.zfh.mapper.SeckillVoucherMapper.selectById" />
+    </resultMap>
+    <select id="listAllByShopId" resultMap="VoucherResultMap">
+        select  * from voucher where shop_id = #{shopId}
+    </select>
+    <select id="listOnlineByShopId" resultMap="VoucherOnlineResultMap">
+        select * from voucher where shop_id = #{shopId} and status = 1
+    </select>
+    <select id="getInfoById" resultMap="VoucherOnlineResultMap">
+        select * from voucher where id = #{id}
+    </select>
+
+</mapper>

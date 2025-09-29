@@ -6,13 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 用户信息请求对象
  */
 @Data
-public class UserInfoDto {
+public class UserInfoDto implements Serializable {
     /**
      * 用户ID
      */
@@ -57,4 +58,6 @@ public class UserInfoDto {
      */
     @Size(max = 100, message = "个人介绍长度不能超过200")
     private String introduce;
+
+    private static final long serialVersionUID = 1L;
 }

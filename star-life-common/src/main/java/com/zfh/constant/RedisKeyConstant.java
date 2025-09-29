@@ -25,4 +25,8 @@ public class RedisKeyConstant {
 
     public static final String SHOP_BUSINESS_KEY = "starLife:shop:business:";
     public static final String SHOP_STATUS_KEY = "starLife:shop:status:";
+
+
+    public static final String BLOG_LIKE_KEY = "starLife:blog:like:";
+    public static final String BLOGCOMMENT_LIKE_KEY = "starLife:blogComment:like:";
 }

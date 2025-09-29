@@ -51,4 +51,5 @@ public class ExceptionConstant {
 
     //此篇博客不存在
     public static final String BLOG_NOT_EXIST = "此篇博客不存在";
+    public static final String BLOG_COMMENT_NOT_EXIST = "此篇评论不存在";
 }

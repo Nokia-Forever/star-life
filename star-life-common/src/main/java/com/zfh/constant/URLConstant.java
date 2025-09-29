@@ -24,5 +24,7 @@ public class URLConstant {
     public static final String STAFF_WHITE_URL = "/client/staff/white/**";
     //博客白名单
     public static final String BLOG_WHITE_URL = "/client/blog/white/**";
+    //优惠券白名单
+    public static final String VOUCHER_WHITE_URL = "/client/voucher/white/**";
 
 }

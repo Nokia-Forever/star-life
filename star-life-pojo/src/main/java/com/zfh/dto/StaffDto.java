@@ -3,11 +3,13 @@ package com.zfh.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 职员dto
  */
 @Data
-public class StaffDto {
+public class StaffDto implements Serializable {
     /**
      * 商铺id
      */
@@ -29,4 +31,6 @@ public class StaffDto {
      * 职员Id
      */
     private Long staffId;
+
+    private static final long serialVersionUID = 1L;
 }
