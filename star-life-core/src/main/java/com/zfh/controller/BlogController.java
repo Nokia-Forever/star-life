@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/client/blog")
 @Slf4j
+//TODO 有个很重要的事情用户的头像和昵称改变后,博客应该也跟着改变
 public class BlogController {
     @Autowired
     private IBlogService blogService;
