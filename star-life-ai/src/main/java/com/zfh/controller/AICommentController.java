@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * ai评论controller
  */
 @RestController
-@RequestMapping("/client/aicomment")
+@RequestMapping("/client/ai-comment")
 public class AICommentController {
     @Autowired
     private AICommentService aICommentService;

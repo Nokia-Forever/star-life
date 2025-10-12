@@ -52,7 +52,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
     private static final DefaultRedisScript<Long> FOLLOW_SCRIPT;
     static {
         FOLLOW_SCRIPT = new DefaultRedisScript<Long>();
-        FOLLOW_SCRIPT.setLocation(new ClassPathResource("follow.lua"));
+        FOLLOW_SCRIPT.setLocation(new ClassPathResource("lua/follow.lua"));
         FOLLOW_SCRIPT.setResultType(Long.class);
     }
 

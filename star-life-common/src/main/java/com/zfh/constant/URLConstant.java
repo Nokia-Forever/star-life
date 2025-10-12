@@ -24,5 +24,15 @@ public class URLConstant {
     public static final String STAFF_WHITE_URL = "/client/staff/white/**";
     //博客白名单
     public static final String BLOG_WHITE_URL = "/client/blog/white/**";
+    //优惠券白名单
+    public static final String VOUCHER_WHITE_URL = "/client/voucher/white/**";
+
+
+    //管理端用户登录URL
+    public static final String ADMIN_LOGIN_URL = "/admin/admin/login";
+    //管理端用户登出URL
+    public static final String ADMIN_LOGOUT_URL = "/admin/admin/logout";
+    //管理端用户注册URL
+    public static final String ADMIN_REGISTER_URL = "/admin/admin/register";
 
 }

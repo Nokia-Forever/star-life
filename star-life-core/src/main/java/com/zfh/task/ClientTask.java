@@ -5,6 +5,7 @@ import com.zfh.constant.RedisKeyConstant;
 import com.zfh.entity.BusinessHours;
 import com.zfh.service.IShopService;
 import com.zfh.utils.RedisUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,6 +22,7 @@ import static com.zfh.constant.ShopConstant.SHOP_STATUS_MANUAL_OPEN;
  * 客户端定时任务
  */
 @Component
+@Slf4j
 public class ClientTask {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -34,7 +36,6 @@ public class ClientTask {
      */
     @Scheduled(cron = "0 0/5 * * * ? ")
    public void updateRedisShopStatus (){
-        System.out.println("定时任务开始执行(客户端)");
         //获取当前店铺营业状态
         Map<String, String> resMap= new HashMap<>();
         stringRedisTemplate.opsForHash().entries(RedisKeyConstant.SHOP_STATUS_KEY).forEach(
@@ -49,7 +50,7 @@ public class ClientTask {
                   return value != null && !value.equals(String.valueOf(SHOP_STATUS_MANUAL_CLOSE)) &&!value.equals(String.valueOf(SHOP_STATUS_MANUAL_OPEN)) ;
                 }
         ).toList();
-        System.out.println("定时任务进行,保留店铺为:"+businessHoursList);
+       log.info("更新营业状态:{}", businessHoursList);
         //redis处理营业状态
         RedisUtils.shopStatusHandle(businessHoursList, objectMapper, stringRedisTemplate);
     }

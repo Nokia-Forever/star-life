@@ -46,10 +46,14 @@ public class URLConfig {
         CLIENT_WHITE_URL_LIST.add(URLConstant.USER_WHITE_URL);
         CLIENT_WHITE_URL_LIST.add(URLConstant.STAFF_WHITE_URL);
         CLIENT_WHITE_URL_LIST.add(URLConstant.BLOG_WHITE_URL);
+        CLIENT_WHITE_URL_LIST.add(URLConstant.VOUCHER_WHITE_URL);
     }
 
     //初始化管理端白名单URL
     private void initAdminWhiteUrl() {
+        ADMIN_WHITE_URL_LIST.add(URLConstant.ADMIN_LOGIN_URL);
+        ADMIN_WHITE_URL_LIST.add(URLConstant.ADMIN_REGISTER_URL);
+        ADMIN_WHITE_URL_LIST.add(URLConstant.ADMIN_LOGOUT_URL);
 
     }
 

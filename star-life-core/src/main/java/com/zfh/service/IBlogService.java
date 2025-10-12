@@ -1,10 +1,10 @@
 package com.zfh.service;
 
-import com.zfh.dto.BlogCommentDto;
-import com.zfh.dto.BlogDto;
-import com.zfh.dto.IdPageDto;
-import com.zfh.entity.Blog;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zfh.dto.*;
+import com.zfh.entity.Blog;
+import com.zfh.entity.BlogComments;
+import com.zfh.vo.BlogVo;
 
 import java.util.List;
 
@@ -38,4 +38,55 @@ public interface IBlogService extends IService<Blog> {
      * @return
      */
     boolean addComment(BlogCommentDto blogCommentDto);
+
+    /**
+     * 获取博客评论列表
+     * @param idPageDto
+     * @return
+     */
+    List<BlogComments> listCommentPage(IdPageDto idPageDto);
+
+    /**
+     * 点赞或取消
+     * @param BlogId
+     * @return
+     */
+    Boolean like(Long BlogId);
+
+    /**
+     * 获取博客评论中评论列表
+     * @param blogCommentPageDto
+     * @return
+     */
+    List<BlogComments> listCommentofcommentPage(BlogCommentPageDto blogCommentPageDto);
+
+    /**
+     * 点赞或取消(评论)
+     * @param blogId
+     * @param commentId
+     * @return
+     */
+    Boolean likeComment(Long blogId, Long commentId);
+
+    /**
+     * 获取博客详情
+     * @param id
+     * @return
+     */
+    BlogVo getInfoById(Long id);
+
+    /**
+     * 修改博客
+      *
+     * @param blogDto
+     * @return
+     */
+    Boolean updateBlog(BlogDto blogDto);
+
+    /**
+     * 置顶
+     * @param blogCommentTopDto
+     * @return
+     */
+    Boolean topComment(BlogCommentTopDto blogCommentTopDto);
 }

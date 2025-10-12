@@ -3,6 +3,7 @@ package com.zfh.handler;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zfh.config.CustomerServiceSessionManager;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.constant.UserConstant;
 import com.zfh.entity.Staff;
@@ -64,7 +65,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         BeanUtils.copyProperties(user, userLoginVo);
 
 
-
         //登录成功生成 token
         String token = JwtUtils.generateToken(jwtProperties.getUserSecret(),  claims );
         response.setHeader(jwtProperties.getUserTokenName(), token);
@@ -96,7 +96,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             }
         }
 
-
+        //移除已建立的webSocket连接
+        CustomerServiceSessionManager.removeUserSession(user.getId().toString());
 
         //响应数据
         HttpUtils.writeSuccessJson(response, userLoginVo, objectMapper);

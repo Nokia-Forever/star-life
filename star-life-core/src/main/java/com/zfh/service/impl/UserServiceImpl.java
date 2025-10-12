@@ -9,18 +9,24 @@ import com.zfh.constant.UserConstant;
 import com.zfh.dto.UserInfoDto;
 import com.zfh.dto.UserPasswordDto;
 import com.zfh.dto.UserRegisterDto;
+import com.zfh.entity.Blog;
+import com.zfh.entity.BlogComments;
 import com.zfh.entity.User;
 import com.zfh.entity.UserInfo;
 import com.zfh.exception.UserLoginException;
 import com.zfh.mapper.UserMapper;
+import com.zfh.service.IBlogCommentsService;
+import com.zfh.service.IBlogService;
 import com.zfh.service.IUserInfoService;
 import com.zfh.service.IUserService;
 import com.zfh.utils.CurrentHolder;
 import com.zfh.vo.UserSelfVo;
 import com.zfh.vo.UserVo;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static com.zfh.constant.UserConstant.USER_STATUS_ENABLE;
@@ -47,6 +54,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private IUserInfoService userInfoService;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private ThreadPoolExecutor threadPoolExecutor;
+    @Autowired
+    private IBlogService blogService;
+    @Autowired
+    private IBlogCommentsService blogCommentsService;
 
     /**
      * 根据用户名查询用户(spring-security)
@@ -134,9 +147,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * @param userInfoDto
      * @return
      */
-    @Transactional
     @Override
     public int updateCurrent(UserInfoDto userInfoDto) {
+        if(userInfoDto.getId() == null){
+            throw new UserLoginException(ExceptionConstant.USER_NOT_LOGIN);
+        }
+        //先判断是否是当前用户
+        User user1 = CurrentHolder.getCurrentUser();
+        if(!user1.getId().equals(userInfoDto.getId())){
+            throw new UserLoginException(ExceptionConstant.USER_NOT_LOGIN);
+        }
         //封装user和userInfo
         User user = new User();
         BeanUtils.copyProperties(userInfoDto, user);
@@ -151,9 +171,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), "nickName", user.getNickName());
         stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_TOKEN_KEY + user.getId(), "icon", user.getIcon());
 
-        //更新user和userInfo
-        updateById( user);
-        return userInfoService.updateById(userInfo) ? 1 : 0;
+
+        //异步更新用户信息,关联的评论,文章
+        UserServiceImpl userService  = (UserServiceImpl)AopContext.currentProxy();
+        userService.updateUser(user, userInfo);
+
+         return 1;
+    }
+
+    @Transactional
+    @Async("threadPoolExecutor")
+    public void updateUser(User user, UserInfo userInfo) {
+       threadPoolExecutor.execute(() -> {
+           //更新user和userInfo
+           updateById(user);
+           userInfoService.updateById(userInfo) ;
+           //更新关联博客,评论...TODO 待完善
+           blogService.update(new LambdaUpdateWrapper<Blog>()
+                   .set(Blog::getUserNickName, user.getNickName())
+                    .set(Blog::getUserIcon, user.getIcon())
+                   .eq(Blog::getUserId, user.getId()));
+
+           blogCommentsService.update(new LambdaUpdateWrapper<BlogComments>()
+                   .set(BlogComments::getUserNickName, user.getNickName())
+                   .set(BlogComments::getUserIcon, user.getIcon())
+                   .eq(BlogComments::getUserId, user.getId()));
+       });
+
     }
 
     /**

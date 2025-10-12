@@ -4,11 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 用户注册对象
  */
 @Data
-public class UserRegisterDto {
+public class UserRegisterDto implements Serializable {
     /*
     用户名
      */
@@ -37,4 +39,5 @@ public class UserRegisterDto {
     头像
      */
     private String icon;
+    private static final long serialVersionUID = 1L;
 }

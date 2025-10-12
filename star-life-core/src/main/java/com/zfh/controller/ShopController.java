@@ -39,6 +39,7 @@ public class ShopController {
     }
 
     //测试
+    //TODO 测试
     @PreAuthorize("hasAnyRole(#id + '_' + T(com.zfh.constant.StaffConstant).CEO)")
     @GetMapping("/{id}")
     public R test(@PathVariable Long id) {

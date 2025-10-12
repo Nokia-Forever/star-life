@@ -3,7 +3,8 @@ package com.zfh.constant;
 /**
  * 异常常量
  */
-public class ExceptionConstant {
+public class
+ExceptionConstant {
     //验证码获取失败
     public static final String CAPTCHA_GET_FAILED = "验证码获取失败";
     //验证码超时,请刷新
@@ -51,4 +52,14 @@ public class ExceptionConstant {
 
     //此篇博客不存在
     public static final String BLOG_NOT_EXIST = "此篇博客不存在";
+    public static final String BLOG_COMMENT_NOT_EXIST = "此篇评论不存在";
+
+    //优惠卷不存在
+    public static final String VOUCHER_NOT_EXIST = "优惠卷不存在";
+
+    public static final String VOUCHER_NOT_START = "秒杀未开始";
+    public static final String VOUCHER_HAD_END = "秒杀已结束";
+    public static final String VOUCHER_NOT_ENOUGH = "优惠卷库存不足";
+    public static final String USER_HAD_ORDER = "不可重复下单";
+
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.entity.BusinessHours;
 import com.zfh.entity.Role;
+import com.zfh.entity.SeckillVoucher;
 import com.zfh.service.IRoleService;
+import com.zfh.service.ISeckillVoucherService;
 import com.zfh.service.IShopService;
 import com.zfh.service.IShopTypeService;
 import com.zfh.utils.RedisUtils;
@@ -36,6 +38,8 @@ public class RedisAppInitializer implements ApplicationRunner {
     private IShopTypeService shopTypeService;
     @Autowired
     private IShopService shopService;
+    @Autowired
+    private ISeckillVoucherService seckillVoucherService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -45,6 +49,22 @@ public class RedisAppInitializer implements ApplicationRunner {
         initShopType();
         //初始化商铺状态
         initShopStatus();
+        //初始化秒杀卷库存
+        initSeckillStock();
+    }
+
+    //初始化秒杀卷库存
+    private void initSeckillStock() {
+        //数据库查询秒杀卷
+        List<SeckillVoucher> list = seckillVoucherService.list();
+        //redis管道操作
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            ValueOperations<String, String> valueOps = stringRedisTemplate.opsForValue();
+            for (SeckillVoucher seckillVoucher : list) {
+                valueOps.set(RedisKeyConstant.SECKILL_STOCK_KEY + seckillVoucher.getVoucherId(), String.valueOf(seckillVoucher.getStock()));
+            }
+            return null;
+        });
     }
 
     //初始化商铺状态

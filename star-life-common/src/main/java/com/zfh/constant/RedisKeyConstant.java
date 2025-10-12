@@ -25,4 +25,16 @@ public class RedisKeyConstant {
 
     public static final String SHOP_BUSINESS_KEY = "starLife:shop:business:";
     public static final String SHOP_STATUS_KEY = "starLife:shop:status:";
+
+
+    public static final String BLOG_LIKE_KEY = "starLife:blog:like:";
+    public static final String BLOGCOMMENT_LIKE_KEY = "starLife:blogComment:like:";
+
+    public static final String SECKILL_STOCK_KEY = "starLife:seckill:stock:";
+    public static final String SECKILL_ORDER_KEY = "starLife:seckill:order:";
+    public static final String SECKILL_ID_KEY = "starLife:seckill:id:";
+    public static final String SECKILL_LOCK_KEY = "starLife:seckill:lock:";
+
+
+    public static final String USER_SESSION_KEY = "startLife:customerService:session:";
 }

@@ -22,6 +22,7 @@
         <module>star-life-pojo</module>
         <module>star-life-common</module>
         <module>star-life-ai</module>
+        <module>star-life-admin</module>
     </modules>
 
 
@@ -35,6 +36,7 @@
         <javax.activation.version>1.1.1</javax.activation.version>
         <aliyun-sdk-oss.version>3.17.4</aliyun-sdk-oss.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
+        <redisson.version>3.2.0</redisson.version>
 
     </properties>
 
@@ -112,10 +114,12 @@
                 <version>1.0.0.4</version>
             </dependency>
 
-
-
-
-
+            <!-- Redisson Core -->
+            <dependency>
+                <groupId>cn.hchub</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>3.2.0</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

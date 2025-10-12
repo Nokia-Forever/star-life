@@ -1,4 +1,6 @@
 该项目正处于开发中,项目名称:星选生活\
+项目简介:一个仿大众点评,以商家信息和用户信息为主要内容的生活服务平台,并结合了AI模块,包含客户端(商家/用户)和管理端双端协同,
+实现AI生成点评,智能评审,AI客服,优惠卷秒杀等功能
 这是基于springboot实现的点评项目,实现用户端+管理端的相结合\
 初步实现:\
 1.用户端的SpringSecurity框架的集成\
@@ -6,8 +8,8 @@
 3.采用了定时任务,redis初始化,关闭监听器\
 
 所用技术:
-mysql,redis,lombok,mybatis-plus,jjwt,hutool-captcha,jackson,springai,ollama........
-spring:springboot,springSecurity,spring-cache,spring-validator,web,spring-task
+mysql,redis,lombok,mybatis-plus,jjwt,hutool-captcha,jackson,springai,ollama,webSocket........
+spring:springboot,springSecurity,spring-cache,spring-validator,web,spring-task,
 
 模块区分:\
 1.star-life-app 启动模块\
@@ -19,13 +21,15 @@ spring:springboot,springSecurity,spring-cache,spring-validator,web,spring-task
 
 功能实现:\
 客户端:\
-1.用户:登录,注册,查询当前用户,更新当前用户,修改密码\
+1.用户:登录,注册,查询当前用户,更新当前用户,修改密码,登出,查询用户,根据用户名查询 用户\
 2.关注:关注和取关,判断是否关注,获取粉丝列表,获取关注列表,共同关注\
 3.商铺类型:查询商铺类型\
 4.商铺:申请店铺(未完善),定时任务判断店铺营业状态,获取店铺详细信息,手动开启或关闭商铺,清除手动处理营业状态,修改店铺状态,修改店铺信息,修改店铺营业时间\
 5.店员:获取当前用户角色下权重比自己小,添加店员,修改店员角色,获取店员列表,获取店员信息\
-6.博客:分页查询博客,添加博客,评论博客\
+6.博客:分页查询博客,添加博客,评论博客,获取博客列表,博客点赞/取消,获取博客的评论,评论点赞/取消,获取博客详情,修改博客,置顶评论\
+7.优惠卷:新增优惠卷,新增秒杀卷,员工查询店铺优惠卷,优惠卷状态改变,查询店铺上架优惠卷,查询优惠卷详情\
 
 
 AI模块:\
 1.ai生成博客点评\
+2.ai客服模块:增加店铺客服规则,生成回答

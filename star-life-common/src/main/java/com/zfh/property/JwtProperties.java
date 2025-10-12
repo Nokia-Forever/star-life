@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class JwtProperties {
     private   String userSecret;
     private   String userTokenName;
+
     private   String adminSecret;
     private   String adminTokenName;
 }

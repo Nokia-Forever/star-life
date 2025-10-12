@@ -16,7 +16,10 @@ import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+
+import static com.zfh.constant.PromptFileConstant.GENERATE_COMMENT_FILE;
 
 /**
  * ai评论服务实现类
@@ -30,7 +33,6 @@ public class AICommentServiceImpl implements AICommentService {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     private ChatClient chatClient;
     public AICommentServiceImpl(DashScopeChatModel dashScopeChatModel) {
         //设置会话记忆
@@ -43,8 +45,7 @@ public class AICommentServiceImpl implements AICommentService {
                 .build();
         chatClient  = ChatClient.builder(dashScopeChatModel)
                 .defaultOptions(options)
-                .defaultSystem("1.你是星选生活里面的一个点评生成助手,用户会提供一些提示给你,你要根据他的提示生成一份好的点评文章给他,供他参考" +
-                      "2.用户可能会根据某个店铺来写点评,所有有可能会传入店铺的详细信息给你,也可能没有,那这时候你就不需要管这个")//系统信息
+                .defaultSystem(new ClassPathResource(GENERATE_COMMENT_FILE))//系统规定
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
@@ -72,14 +73,14 @@ public class AICommentServiceImpl implements AICommentService {
         }
 
         String content = chatClient
-                .prompt(shopInfo.isBlank() ? "按用户要求生成" : "根据店铺信息生成" +shopInfo)
+                .prompt(shopInfo.isBlank() ? "empty" : "店铺信息:" +shopInfo)
                 .messages(chatMemory.get(user.getId().toString()))//获取当前用户的会话记忆
                 .user(aiCommentDto.getPrompt())
                 .call()
                 .content();
 
         //保存当前用户的会话记忆
-       if(content!=null){
+       if(content!=null&&!content.isBlank()){
            chatMemory.add(user.getId().toString(),new UserMessage( content));
        }
         return content;

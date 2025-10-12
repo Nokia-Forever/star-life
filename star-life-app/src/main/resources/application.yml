@@ -27,11 +27,6 @@ spring:
       validation:
         enabled: true
 
-        #cache
-  cache:
-    redis:
-      key-prefix: starLife
-
       #file
   servlet:
     multipart:
@@ -96,7 +91,4 @@ logging:
     com.zfh.filter.UsernamePasswordJsonFilter: off
     com.zfh.mapper: debug
     org.springframework.ai.chat.client.advisor: DEBUG
-
-
-
 
