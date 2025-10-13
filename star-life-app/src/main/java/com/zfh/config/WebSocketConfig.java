@@ -1,7 +1,8 @@
 package com.zfh.config;
 
-import com.zfh.handler.CustomerServiceWebSocketHandler;
+
 import com.zfh.interceptor.CustomerServiceWebSocketHandshakeInterceptor;
+import com.zfh.websocket.CustomerServiceWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

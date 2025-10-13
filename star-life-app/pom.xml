@@ -51,11 +51,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.zfh</groupId>
-            <artifactId>star-life-ai</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+
 
 <!--        mysql-->
         <dependency>
@@ -137,11 +133,16 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
         <!--webSocket-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zfh</groupId>
+            <artifactId>star-life-ai</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

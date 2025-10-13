@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zfh.dto.AiCustomerServiceDto;
 import com.zfh.entity.AiCustomerService;
+import com.zfh.entity.AiCustomerServiceChatDto;
 import com.zfh.mapper.AiCustomerServiceMapper;
 import com.zfh.service.IAiCustomerServiceService;
+import com.zfh.tools.CustomerServiceTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +36,10 @@ public class AiCustomerServiceServiceImpl extends ServiceImpl<AiCustomerServiceM
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private CustomerServiceTools customerServiceTools;
+
+
 
     private ChatClient chatClient;
     public AiCustomerServiceServiceImpl(DashScopeChatModel dashScopeChatModel) {
@@ -66,24 +72,20 @@ public class AiCustomerServiceServiceImpl extends ServiceImpl<AiCustomerServiceM
      * ai生成回答
      */
     @Override
-    public String generateAnswer(Long shopId,String question){
+    public String handleQuestion(AiCustomerServiceChatDto aiCustomerServiceChatDto){
         //现根据shopId查询出ai客服信息
-        if (shopId==null){
-            return REQUEST_ERROR;
-        }
         AiCustomerService aiCustomerService
-                = this.getOne(new LambdaQueryWrapper<AiCustomerService>().eq(AiCustomerService::getShopId,shopId));
+                = this.getOne(new LambdaQueryWrapper<AiCustomerService>().eq(AiCustomerService::getShopId,aiCustomerServiceChatDto.getShopId()));
         if (aiCustomerService==null){
             return REQUEST_ERROR;
         }
 
         return chatClient
-                .prompt("店铺内容信息:"+aiCustomerService.getPrompt())
+                .prompt("客户发送的信息详情:" +aiCustomerServiceChatDto +"店铺内容信息:"+aiCustomerService.getPrompt())
                 .system(shopRoles->shopRoles.param("shop_rules",aiCustomerService.getAdditionalConfig()))
-                .user(question)
+                .user(aiCustomerServiceChatDto.getContent())
+                .tools(customerServiceTools)
                 .call()
                 .content();
     }
-
-
 }

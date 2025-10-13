@@ -1,8 +1,9 @@
 package com.zfh.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zfh.dto.AiCustomerServiceDto;
 import com.zfh.entity.AiCustomerService;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.zfh.entity.AiCustomerServiceChatDto;
 
 /**
  * <p>
@@ -24,5 +25,5 @@ public interface IAiCustomerServiceService extends IService<AiCustomerService> {
     /**
      * ai生成回答
      */
-    String generateAnswer(Long shopId,String question);
+    String handleQuestion(AiCustomerServiceChatDto aiCustomerServiceChatDto);
 }

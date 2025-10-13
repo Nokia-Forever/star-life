@@ -1,10 +1,11 @@
-package com.zfh.config;
+package com.zfh.websocket;
 
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,19 +31,21 @@ public class CustomerServiceSessionManager {
         if(merchantServiceMap.containsKey(shopId)){
             merchantServiceMap.get(shopId).add(merchantId);
         }else {
-            merchantServiceMap.put(shopId, List.of(merchantId));
+            List<String> serviceList = new LinkedList<>();
+            serviceList.add(merchantId);
+            merchantServiceMap.put(shopId, serviceList);
         }
     }
 
     //获取一个客服id
-    public static String getOneCustomerService(String shopId) {
+    public static Long getOneCustomerService(String shopId) {
         //没有客服返回 null
         if(merchantServiceMap.get(shopId) == null || merchantServiceMap.get(shopId).isEmpty()){
-            return null;
+            return -1L;
         }
         String merchantId = merchantServiceMap.get(shopId).getFirst();
         merchantServiceMap.get(shopId).removeFirst();
-        return merchantId;
+        return Long.parseLong(merchantId);
     }
 
     //客服重回空闲
@@ -64,8 +67,8 @@ public class CustomerServiceSessionManager {
     //TODO 注意记忆持久化
     //TODO 未成功实现
 
-    //客服发送给用户
-    public static void sendToUser(String userId, String message) throws IOException {
+    //发信息给客服
+    public static void sendToCustomerService(String userId, String message) throws IOException {
         WebSocketSession session = customerServiceSessions.get(userId);
         if (session != null && session.isOpen()) {
             try {
@@ -76,8 +79,8 @@ public class CustomerServiceSessionManager {
         }
     }
 
-    //用户发送给客服
-    public static void sendToCustomerService(String merchantId, String message) throws IOException {
+    //发信息给用户
+    public static void sendToUser(String merchantId, String message) throws IOException {
         WebSocketSession session = userSessions.get(merchantId);
         if (session != null && session.isOpen()) {
             try {

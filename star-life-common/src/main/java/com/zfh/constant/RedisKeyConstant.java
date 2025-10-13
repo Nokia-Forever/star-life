@@ -36,5 +36,8 @@ public class RedisKeyConstant {
     public static final String SECKILL_LOCK_KEY = "starLife:seckill:lock:";
 
 
-    public static final String USER_SESSION_KEY = "startLife:customerService:session:";
+    public static final String USER_SESSION_LOG_KEY = "starLife:customerService:sessionLog:";
+
+    public static final String USER_SESSION_KEY = "starLife:customerService:session:";
+    public static final Long USER_SESSION_EXPIRE_TIME = 1800000L;//外置单位为毫秒(30分钟)
 }
