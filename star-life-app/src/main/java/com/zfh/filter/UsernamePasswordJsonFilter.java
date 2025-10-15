@@ -2,6 +2,7 @@ package com.zfh.filter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zfh.constant.AiModelExceptionConstant;
 import com.zfh.constant.ExceptionConstant;
 import com.zfh.constant.RedisKeyConstant;
 import com.zfh.property.CaptchaProperties;
@@ -35,13 +36,13 @@ public class UsernamePasswordJsonFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // 检查是否为POST请求
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException(ExceptionConstant.REQUEST_ERROR);
+            throw new AuthenticationServiceException(AiModelExceptionConstant.REQUEST_ERROR);
         }
 
         // 检查Content-Type是否为JSON
         String contentType = request.getContentType();
         if (contentType == null || !contentType.contains("application/json")) {
-            throw new AuthenticationServiceException(ExceptionConstant.REQUEST_ERROR);
+            throw new AuthenticationServiceException(AiModelExceptionConstant.REQUEST_ERROR);
         }
 
         String username = "";

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zfh.dto.AiCustomerServiceDto;
 import com.zfh.entity.AiCustomerService;
 import com.zfh.entity.AiCustomerServiceChatDto;
+import com.zfh.vo.ChatSessionBuildVo;
 
 /**
  * <p>
@@ -26,4 +27,26 @@ public interface IAiCustomerServiceService extends IService<AiCustomerService> {
      * ai生成回答
      */
     String handleQuestion(AiCustomerServiceChatDto aiCustomerServiceChatDto);
+
+
+    /**
+     * 人工客服上线
+     * @param shopId
+     * @return
+     */
+    Boolean huManOnline(Long shopId);
+
+    /**
+     * 创建会话
+     * @param shopId
+     * @return
+     */
+    ChatSessionBuildVo buildChatSession(Long shopId);
+
+    /**
+     * 关闭会话
+     * @param sessionId
+     * @return
+     */
+    Boolean closeChatSession(String sessionId);
 }

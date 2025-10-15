@@ -28,4 +28,6 @@ public class AICommentController {
     public R generateComment(@RequestBody AICommentDto aICommentDto){
         return R.OK(aICommentService.generateComment(aICommentDto));
     }
+
+
 }

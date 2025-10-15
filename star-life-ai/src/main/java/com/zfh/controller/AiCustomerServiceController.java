@@ -5,12 +5,10 @@ import com.zfh.dto.AiCustomerServiceDto;
 import com.zfh.result.R;
 import com.zfh.service.IAiCustomerServiceService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *AI客服controller
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/client/ai-customerService")
+@Slf4j
 public class AiCustomerServiceController {
     @Autowired
     private IAiCustomerServiceService aiCustomerServiceService;
@@ -34,5 +33,41 @@ public class AiCustomerServiceController {
     @PostMapping
     public R addAiCustomerService(@RequestBody @Valid AiCustomerServiceDto aiCustomerServiceDto){
         return R.OK(aiCustomerServiceService.addAiCustomerService(aiCustomerServiceDto));
+    }
+
+
+    /**
+     *人工客服上线
+     * @param shopId
+     * @return
+     */
+    @PreAuthorize("hasAnyRole(#shopId + '_' + T(com.zfh.constant.StaffConstant).CEO," +
+            "#shopId + '_' + T(com.zfh.constant.StaffConstant).Manger," +
+            "#shopId + '_' + T(com.zfh.constant.StaffConstant).Salesclerk," +
+            "#shopId+ '_' + T(com.zfh.constant.StaffConstant).CustomerService) ")
+    @GetMapping("/online/{shopId}")
+    public R huManOnline(@PathVariable Long shopId){
+        return R.OK(aiCustomerServiceService.huManOnline(shopId));
+    }
+
+    /**
+     * 建立客服会话
+     * @param
+     * @return
+     */
+    @PostMapping("/chat/{shopId}")
+    public R buildChatSession(@PathVariable Long shopId){
+        return R.OK(aiCustomerServiceService.buildChatSession(shopId));
+    }
+
+
+    /**
+     * 关闭会话
+     * @param sessionId
+     * @return
+     */
+    @DeleteMapping("/closeChatSession/{sessionId}")
+    public R closeChatSession(@PathVariable String sessionId){
+        return R.OK(aiCustomerServiceService.closeChatSession(sessionId));
     }
 }

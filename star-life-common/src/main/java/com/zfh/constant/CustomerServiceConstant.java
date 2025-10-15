@@ -8,4 +8,5 @@ public class CustomerServiceConstant {
     public static final int CUSTOMER_SERVICE = 1;
     public static final int USER = 0;
 
+    public static final Long AI_CUSTOMER_SERVICE = 0L;
 }

@@ -21,5 +21,5 @@ public interface ICustomerServiceChatService extends IService<CustomerServiceCha
      * @param userId
      * @return
      */
-    List<CustomerServiceChat> listByShopIdAndUserId(Long shopId, Long userId);
+    List<CustomerServiceChat> listByShopIdAndUserId(Long shopId, Long userId,Integer currentPage, Integer pageSize);
 }

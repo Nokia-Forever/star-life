@@ -14,81 +14,95 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CustomerServiceSessionManager {
     // 客户会话Map
-    private static final ConcurrentHashMap<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, WebSocketSession> userSessions = new ConcurrentHashMap<>();
     //商家会话 Map
-    private static final ConcurrentHashMap<String, WebSocketSession> customerServiceSessions = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, WebSocketSession> customerServiceSessions = new ConcurrentHashMap<>();
     //商家客服空闲map Map<商家id, 商家客服id列表>
-    private static final ConcurrentHashMap<String, List<String>> merchantServiceMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, List<Long>> merchantServiceMap = new ConcurrentHashMap<>();
 
-    //添加客户
-    public static void addUserSession(String userId, WebSocketSession session) {
+    //客户上线
+    public static void addUserSession(Long userId, WebSocketSession session) {
         userSessions.put(userId, session);
     }
 
-    //添加客服
-    public static void addCustomerServiceSession(String shopId,String merchantId, WebSocketSession session) {
+    //客服上线
+    public static void addCustomerServiceSession(Long merchantId, WebSocketSession session) {
         customerServiceSessions.put(merchantId, session);
+    }
+
+    //添加客服到店铺
+    public static void addCustomerServiceSession(Long shopId,Long merchantId) {
         if(merchantServiceMap.containsKey(shopId)){
             merchantServiceMap.get(shopId).add(merchantId);
         }else {
-            List<String> serviceList = new LinkedList<>();
+            List<Long> serviceList = new LinkedList<>();
             serviceList.add(merchantId);
             merchantServiceMap.put(shopId, serviceList);
         }
     }
 
     //获取一个客服id
-    public static Long getOneCustomerService(String shopId) {
+    public static Long getOneCustomerService(Long shopId) {
         //没有客服返回 null
         if(merchantServiceMap.get(shopId) == null || merchantServiceMap.get(shopId).isEmpty()){
             return -1L;
         }
-        String merchantId = merchantServiceMap.get(shopId).getFirst();
+        Long merchantId = merchantServiceMap.get(shopId).getFirst();
         merchantServiceMap.get(shopId).removeFirst();
-        return Long.parseLong(merchantId);
-    }
-
-    //客服重回空闲
-    public static void CustomerServiceToRelax(String shopId,String merchantId) {
-        merchantServiceMap.get(shopId).add(merchantId);
+        return merchantId;
     }
 
     // 移除用户连接
-    public static void removeUserSession(String userId) {
+    public static void removeUserSession(Long userId) {
         userSessions.remove(userId);
     }
 
     //移除客服连接
-    public static void removeCustomerServiceSession(String merchantId) {
+    //TODo 要根据店铺id删除
+    public static void removeCustomerServiceSession(Long merchantId) {
         customerServiceSessions.remove(merchantId);
-        merchantServiceMap.get(merchantId).remove(merchantId);
     }
 
-    //TODO 注意记忆持久化
-    //TODO 未成功实现
+    //移除客服
+    public static void removeCustomerService(Long shopId,Long merchantId) {
+        merchantServiceMap.get(shopId).remove(merchantId);
+    }
 
     //发信息给客服
-    public static void sendToCustomerService(String userId, String message) throws IOException {
+    public static void sendToCustomerService(Long userId, String... messages) throws IOException {
         WebSocketSession session = customerServiceSessions.get(userId);
+        sendMessageBath(messages, session);
+    }
+
+    //批量发送信息
+    private static void sendMessageBath(String[] messages, WebSocketSession session) {
         if (session != null && session.isOpen()) {
-            try {
-                session.sendMessage(new TextMessage(message));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+           for (String message : messages){
+               try {
+                   session.sendMessage(new TextMessage(message));
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
         }
     }
 
+    //p
+
     //发信息给用户
-    public static void sendToUser(String merchantId, String message) throws IOException {
+    public static void sendToUser(Long merchantId, String... messages) throws IOException {
         WebSocketSession session = userSessions.get(merchantId);
-        if (session != null && session.isOpen()) {
-            try {
-                session.sendMessage(new TextMessage(message));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        sendMessageBath(messages, session);
+    }
+
+    //查询用户是否建立连接
+    public static boolean isUserConnected(Long userId) {
+        return userSessions.containsKey(userId);
+    }
+
+    //查询客服是否建立连接
+    public static boolean isCustomerServiceConnected(Long merchantId) {
+        return customerServiceSessions.containsKey(merchantId);
     }
 }
 

@@ -2,6 +2,7 @@ package com.zfh.interceptor;
 
 import com.zfh.constant.CustomerServiceConstant;
 import com.zfh.constant.RedisKeyConstant;
+import com.zfh.constant.UserConstant;
 import com.zfh.property.JwtProperties;
 import com.zfh.service.IShopService;
 import com.zfh.utils.JwtUtils;
@@ -39,54 +40,44 @@ public class CustomerServiceWebSocketHandshakeInterceptor implements HandshakeIn
             Map<String, Object> attributes) throws IOException {
         if (request instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-            String type = servletRequest.getServletRequest().getParameter("type");
-            String shopId = servletRequest.getServletRequest().getParameter("shopId");
+            String typeStr = servletRequest.getServletRequest().getParameter("type");
 
-            //都不能为false
-            if(type==null||shopId==null){
-                return false;
-            }
-            //验证店铺id
-            if (!verifyShopId(shopId)) {
+            //不能为false
+            if(typeStr==null||typeStr.isBlank()){
                 return false;
             }
 
+            Integer type = Integer.parseInt(typeStr);
             //验证用户 token并获取用户id
             Long userId = verifyUserToken(servletRequest);
             if (userId==-1L) {
                 return false;
             }
             //验证是否为客服连接
-            if (!verifyCustomerService(servletRequest,userId,shopId,type)) {
+            if (!verifyCustomerService(userId,type)) {
                 return false;
             }
-
             //重置有效时间
             stringRedisTemplate.expire(RedisKeyConstant.USER_TOKEN_KEY + userId, RedisKeyConstant.USER_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
-
             //放入属性
-            attributes.put("userId", userId.toString());
-            attributes.put("shopId", shopId);
+            attributes.put("userId", userId);
             attributes.put("type", type);
             return true;
         }
         return false;
     }
 
-    //验证店铺id
-    private boolean verifyShopId(String shopId) {
-        return shopService.getInfoById(Long.parseLong(shopId)) != null;
-    }
 
     //验证客服链接权限
-    private boolean verifyCustomerService(ServletServerHttpRequest servletRequest,Long userId,String shopId,String type) {
+    private boolean verifyCustomerService(Long userId,Integer type) {
         //用户无需验证
-        if (Integer.parseInt(type)== CustomerServiceConstant.USER) {
+        if (type== CustomerServiceConstant.USER) {
             return true;
         }
-        //验证当前用户权重
-        Object roleId = stringRedisTemplate.opsForHash().get(RedisKeyConstant.USER_SHOP_ROLE_KEY + userId, shopId);
-        return roleId != null;
+
+        //查询他是否是商家
+        String userType = (String) stringRedisTemplate.opsForHash().get(RedisKeyConstant.USER_TOKEN_KEY + userId, "userType");
+        return userType!=null&&Long.parseLong(userType) == UserConstant.USER_TYPE_BUSINESS;
     }
 
     //验证用户token,并获取用户id

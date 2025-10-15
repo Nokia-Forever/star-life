@@ -7,6 +7,6 @@
         where shop_id = #{shopId}
         and (sender_id = #{userId}
         or receiver_id = #{userId})
-        order by create_time
+        order by create_time desc
     </select>
 </mapper>

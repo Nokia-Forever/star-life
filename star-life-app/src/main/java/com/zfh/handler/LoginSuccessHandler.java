@@ -97,7 +97,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         //移除已建立的webSocket连接
-        CustomerServiceSessionManager.removeUserSession(user.getId().toString());
+        CustomerServiceSessionManager.removeUserSession(user.getId());
 
         //响应数据
         HttpUtils.writeSuccessJson(response, userLoginVo, objectMapper);

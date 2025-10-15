@@ -1,5 +1,6 @@
 package com.zfh.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zfh.entity.CustomerServiceChat;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -21,5 +22,5 @@ public interface CustomerServiceChatMapper extends BaseMapper<CustomerServiceCha
      * @param userId
      * @return
      */
-    List<CustomerServiceChat> listByShopIdAndUserId(Long shopId, Long userId);
+    List<CustomerServiceChat> listByShopIdAndUserId(Long shopId, Long userId, Page  page);
 }

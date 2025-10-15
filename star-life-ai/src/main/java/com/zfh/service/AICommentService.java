@@ -13,4 +13,6 @@ public interface AICommentService {
      * @return
      */
     String generateComment(AICommentDto aiCommentDto);
+
+
 }
